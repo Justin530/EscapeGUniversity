@@ -12,21 +12,28 @@ import java.util.Objects;
 public class Player extends Entity{
     GamePanel gp;
     KeyHandler keyH;
-
-    public Player(GamePanel gp, KeyHandler keyH){
+    private static final int BLOOD=1200;
+    private int HP;//血量
+    private int sign_weapon;//等于0是剑，等于1是火球
+    private int coldDown;//设定的冷却时间
+    private int CD;//现在武器剩余的冷却时间
+    private static final int BLOOD_LENGTH=40;//血条原长度
+    private int onAttackState;//受攻击的间隔
+    public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
-
         //the hitBox is smaller than the actual image, x and y values are calculated from the image
         hitBox = new Rectangle(loc.getXPosition(), loc.getYPosition(), gp.tileSize, gp.tileSize);
         hitBox.x = 8;//start from the corner of the image
         hitBox.y = 16;
         hitBox.width = 32;
         hitBox.height = 32;
-
+        this.HP=BLOOD;
+        this.coldDown = 10;
         setDefaultValues();
         getPlayerImage();
     }
+
 
     public void setDefaultValues(){
         if (this.loc == null) {
@@ -54,6 +61,9 @@ public class Player extends Entity{
         }
     }
 
+    /**
+     * 处理键盘的输入
+     */
     public void update(){
         if(keyH.upPressed){
             direction = Direction.U;
@@ -67,6 +77,27 @@ public class Player extends Entity{
         if(keyH.rightPressed){
             direction = Direction.R;
         }
+        if(keyH.upPressed && keyH.leftPressed){
+            direction = Direction.LU;
+        }
+        if(keyH.downPressed && keyH.leftPressed){
+            direction = Direction.LD;
+        }
+        if(keyH.rightPressed && keyH.upPressed){
+            direction = Direction.RU;
+        }
+        if(keyH.rightPressed && keyH.downPressed){
+            direction = Direction.RD;
+        }
+        if (keyH.attackPressed && this.getCD() == 0) {
+            this.setCD();
+        } else if (keyH.changeWeaponPressed) {
+            sign_weapon=(sign_weapon+1)%2;
+        } else if(keyH.greatPressed && this.getCD() == 0){
+            if(sign_weapon==1) {
+                //Fireball.greatPower();
+                this.setCD();}
+        }
 
         //check tile collision
         collisionOn = false;
@@ -79,9 +110,24 @@ public class Player extends Entity{
                 case D -> loc.setYPosition(loc.getYPosition() + speed);
                 case L -> loc.setXPosition(loc.getXPosition() - speed);
                 case R -> loc.setXPosition(loc.getXPosition() + speed);
+                case LD -> {
+                    loc.setXPosition(loc.getXPosition() - speed);
+                    loc.setYPosition(loc.getYPosition() + speed);
+                }
+                case RD -> {
+                    loc.setYPosition(loc.getYPosition() + speed);
+                    loc.setXPosition(loc.getXPosition() + speed);
+                }
+                case LU -> {
+                    loc.setXPosition(loc.getXPosition() - speed);
+                    loc.setYPosition(loc.getYPosition() - speed);
+                }
+                case RU -> {
+                    loc.setXPosition(loc.getXPosition() + speed);
+                    loc.setYPosition(loc.getYPosition() - speed);
+                }
             }
         }
-
         if (spriteCount == 10) {
             spriteNum = (spriteNum == 1) ? 2 : 1;
             spriteCount = 0;
@@ -90,6 +136,10 @@ public class Player extends Entity{
         }
     }
 
+    /**
+     * 绘画血条、人物移动等
+     * @param g2d
+     */
     public void draw(Graphics2D g2d) {
         BufferedImage img = switch (direction) {
             case U -> (spriteNum == 1) ? up1 : (spriteNum == 2) ? up2 : null;
@@ -98,8 +148,56 @@ public class Player extends Entity{
             case R -> (spriteNum == 1) ? right1 : (spriteNum == 2) ? right2 : null;
             default -> null;
         };
-
         g2d.drawImage(img, loc.getXPosition(), loc.getYPosition(), gp.tileSize, gp.tileSize, null);
+        //血条
+        Color c = g2d.getColor();
+        g2d.setColor(Color.RED);
+        g2d.drawRect(loc.getXPosition() - 20, loc.getYPosition() - 40, BLOOD_LENGTH, 7);
+        g2d.fillRect( loc.getXPosition()- 20, loc.getYPosition() - 40, HP, 7);
+        g2d.setColor(c);
+        //武器名
+        if (sign_weapon == 0) {
+            g2d.drawString("sword", loc.getXPosition() - 20, loc.getYPosition() - 45);
+        } else {
+            g2d.drawString("fireBoll", loc.getXPosition() - 20, loc.getYPosition() - 45);
+        }
+
     }
+
+    /**
+     * 攻击的模块
+     */
+    public void attack(){
+        if(getHP() <= 0 ) return;
+        this.onAttackState = 5;
+        if(getHP() <= 0) {
+            this.setHP(0);
+            return;
+        }
+    }
+
+    /**
+     * @return CD
+     * 返回现在的冷却时间
+     */
+    public int getCD() {
+        return this.CD;
+    }
+
+    /**
+     * 进入CD
+     */
+    public void setCD() {CD = coldDown;}
+
+    public int getHP() {return HP;}
+
+    public void setHP(int HP) {this.HP = HP;}
+
+    public int getSign_weapon() {return sign_weapon;}
+
+    public int getColdDown() {return coldDown;}
+
+    public int getOnAttackState() {return onAttackState;}
+
 }
 

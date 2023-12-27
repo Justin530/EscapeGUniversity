@@ -16,4 +16,5 @@ public class Entity {
     public int spriteNum = 1;//sprite number, decide which sprite to draw(1 or 2)
     public Rectangle hitBox;
     public boolean collisionOn = false;
+
 }

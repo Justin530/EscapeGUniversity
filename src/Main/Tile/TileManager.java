@@ -26,7 +26,7 @@ public class TileManager {
     public void getTileImage() {
         try {
             // todo
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }

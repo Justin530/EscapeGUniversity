@@ -11,10 +11,10 @@ public class CollisionDetector {
 
     public void checkTile(Entity entity) {
         //record the position of the entity's hitBox
-        int entityLeftX = entity.loc.getxPosition() + entity.hitBox.x;
-        int entityRightX = entity.loc.getxPosition() + entity.hitBox.x + entity.hitBox.width;
-        int entityUpY = entity.loc.getyPosition() + entity.hitBox.y;
-        int entityDownY = entity.loc.getyPosition() + entity.hitBox.y + entity.hitBox.height;
+        int entityLeftX = entity.loc.getXPosition() + entity.hitBox.x;
+        int entityRightX = entity.loc.getXPosition() + entity.hitBox.x + entity.hitBox.width;
+        int entityUpY = entity.loc.getYPosition() + entity.hitBox.y;
+        int entityDownY = entity.loc.getYPosition() + entity.hitBox.y + entity.hitBox.height;
 
         int entityLeftCol = entityLeftX / gp.tileSize;
         int entityRightCol = entityRightX / gp.tileSize;

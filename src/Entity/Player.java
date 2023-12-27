@@ -18,7 +18,7 @@ public class Player extends Entity{
         this.keyH = keyH;
 
         //the hitBox is smaller than the actual image, x and y values are calculated from the image
-        hitBox = new Rectangle(loc.getxPosition(), loc.getyPosition(), gp.tileSize, gp.tileSize);
+        hitBox = new Rectangle(loc.getXPosition(), loc.getYPosition(), gp.tileSize, gp.tileSize);
         hitBox.x = 8;//start from the corner of the image
         hitBox.y = 16;
         hitBox.width = 32;
@@ -32,8 +32,8 @@ public class Player extends Entity{
         if (this.loc == null) {
             this.loc = new Location(100, 100);
         } else {
-            this.loc.setxPosition(100);
-            this.loc.setyPosition(100);
+            this.loc.setXPosition(100);
+            this.loc.setYPosition(100);
         }
         this.speed = 4;
         direction = Direction.D;
@@ -75,10 +75,10 @@ public class Player extends Entity{
         //if collision is detected, player cannot move
         if (!collisionOn) {
             switch (direction) {
-                case U -> loc.setyPosition(loc.getyPosition() - speed);
-                case D -> loc.setyPosition(loc.getyPosition() + speed);
-                case L -> loc.setxPosition(loc.getxPosition() - speed);
-                case R -> loc.setxPosition(loc.getxPosition() + speed);
+                case U -> loc.setYPosition(loc.getYPosition() - speed);
+                case D -> loc.setYPosition(loc.getYPosition() + speed);
+                case L -> loc.setXPosition(loc.getXPosition() - speed);
+                case R -> loc.setXPosition(loc.getXPosition() + speed);
             }
         }
 
@@ -99,7 +99,7 @@ public class Player extends Entity{
             default -> null;
         };
 
-        g2d.drawImage(img, loc.getxPosition(), loc.getyPosition(), gp.tileSize, gp.tileSize, null);
+        g2d.drawImage(img, loc.getXPosition(), loc.getYPosition(), gp.tileSize, gp.tileSize, null);
     }
 }
 

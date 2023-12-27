@@ -1,5 +1,7 @@
 package Entity;
 
+import Main.GamePanel;
+
 public class Location {
     private int xPosition;
     private int yPosition;
@@ -9,41 +11,41 @@ public class Location {
         this.yPosition = yPosition;
     }
 
-    public int getxPosition() {
+    public int getXPosition() {
         return xPosition;
     }
 
-    public int getyPosition() {
+    public int getYPosition() {
         return yPosition;
     }
 
-    public void setxPosition(int xPosition) {
+    public void setXPosition(int xPosition) {
         this.xPosition = xPosition;
     }
 
-    public void setyPosition(int yPosition) {
+    public void setYPosition(int yPosition) {
         this.yPosition = yPosition;
     }
 
     /**
      * 判断向指定方向是否可以移动
-     * @param location
+     * @param entity
      * @param direction
      * @return
      */
-    public static boolean canMove(Location location, Direction direction){
-        return true;
+    public static boolean canMove(Entity entity, Direction direction){
+      return true;
     }
 
+
+
     /**
-     * 向指定方向移动一步
-     * @param location
+     * 向指定方向移动一步(不作碰撞检测)
+     * @param entity
      * @param direction
      */
-    public static void moveOneStep(Location location, Direction direction) {
-        if(canMove(location,direction)) {
-            location.xPosition += direction.getDx();
-            location.yPosition += direction.getDy();
-        }
+    public static void moveOneStep(Entity entity, Direction direction) {
+            entity.loc.setXPosition(entity.loc.getXPosition() + direction.getDx());
+            entity.loc.setYPosition(entity.loc.getYPosition() + direction.getDy());
     }
 }

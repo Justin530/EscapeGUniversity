@@ -1,5 +1,7 @@
 package Entity;
 
+import java.util.Random;
+
 public enum Direction {
     /**
      * 定义了八个方向
@@ -18,7 +20,10 @@ public enum Direction {
             this.dx = x;
             this.dy = y;
         }
-
+    private static Random rd = new Random(System.currentTimeMillis());
+        public static Direction getRandomDirection(){
+            return Direction.values()[rd.nextInt(Direction.values().length)];
+        }
     public int getDx() {
         return dx;
     }

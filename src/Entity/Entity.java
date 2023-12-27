@@ -8,7 +8,7 @@ import java.awt.*;
 public class Entity {
     public int MaxHP;
     public int HP;//current HP
-    public Location worldLoc;
+    public Location worldLoc = new Location(0, 0);
     public int speed;
     public GamePanel gamePanel;
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;

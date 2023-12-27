@@ -40,12 +40,9 @@ public class Player extends Entity{
 
 
     public void setDefaultValues(){
-        if (this.worldLoc == null) {
-            this.worldLoc = new Location(100, 100);
-        } else {
-            this.worldLoc.setXPosition(100);
-            this.worldLoc.setYPosition(100);
-        }
+        this.worldLoc.setXPosition(gp.tileSize * 14);
+        this.worldLoc.setYPosition(gp.tileSize * 33);
+
         this.screenLoc.setXPosition(gp.screenWidth / 2 - gp.tileSize / 2);
         this.screenLoc.setYPosition(gp.screenHeight / 2 - gp.tileSize / 2);
 
@@ -151,19 +148,13 @@ public class Player extends Entity{
      */
     public void draw(Graphics2D g2d) {
         BufferedImage img = switch (direction) {
-            case U -> (spriteNum == 1) ? up1 : (spriteNum == 2) ? up2 : null;
-            case D -> (spriteNum == 1) ? down1 : (spriteNum == 2) ? down2 : null;
+            case LU, U, RU -> (spriteNum == 1) ? up1 : (spriteNum == 2) ? up2 : null;
+            case LD, D, RD -> (spriteNum == 1) ? down1 : (spriteNum == 2) ? down2 : null;
             case L -> (spriteNum == 1) ? left1 : (spriteNum == 2) ? left2 : null;
             case R -> (spriteNum == 1) ? right1 : (spriteNum == 2) ? right2 : null;
             default -> null;
         };
         g2d.drawImage(img, screenLoc.getXPosition(), screenLoc.getYPosition(), gp.tileSize, gp.tileSize, null);
-        //血条
-//        Color c = g2d.getColor();
-//        g2d.setColor(Color.RED);
-//        g2d.drawRect(screenLoc.getXPosition() - 20, screenLoc.getYPosition() - 40, BLOOD_LENGTH, 7);
-//        g2d.fillRect( screenLoc.getXPosition()- 20, screenLoc.getYPosition() - 40, 40, 7);
-//        g2d.setColor(c);
         //武器名
         if (sign_weapon == 0) {
             g2d.drawString("sword", worldLoc.getXPosition() - 20, worldLoc.getYPosition() - 45);

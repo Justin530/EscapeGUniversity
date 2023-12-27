@@ -40,12 +40,9 @@ public class Player extends Entity{
 
 
     public void setDefaultValues(){
-        if (this.worldLoc == null) {
-            this.worldLoc = new Location(100, 100);
-        } else {
-            this.worldLoc.setXPosition(100);
-            this.worldLoc.setYPosition(100);
-        }
+        this.worldLoc.setXPosition(gp.tileSize * 7);
+        this.worldLoc.setYPosition(gp.tileSize * 4);
+
         this.screenLoc.setXPosition(gp.screenWidth / 2 - gp.tileSize / 2);
         this.screenLoc.setYPosition(gp.screenHeight / 2 - gp.tileSize / 2);
 
@@ -166,9 +163,9 @@ public class Player extends Entity{
 //        g2d.setColor(c);
         //武器名
         if (sign_weapon == 0) {
-            g2d.drawString("sword", worldLoc.getXPosition() - 20, worldLoc.getYPosition() - 45);
+            g2d.drawString("sword", screenLoc.getXPosition() - 20, screenLoc.getYPosition() - 45);
         } else {
-            g2d.drawString("fireBoll", worldLoc.getXPosition() - 20, worldLoc.getYPosition() - 45);
+            g2d.drawString("fireBoll", screenLoc.getXPosition() - 20, screenLoc.getYPosition() - 45);
         }
 
     }

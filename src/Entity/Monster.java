@@ -1,11 +1,10 @@
 package Entity;
 
-import Main.GamePanel;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
+
 
 /*
 暂时考虑每个怪物单独对应一个线程，线程负责更新怪物状态并作出行为
@@ -26,9 +25,10 @@ attack()
  */
 public class Monster extends Entity implements Runnable {
     private int HP;
+    private int attack;
     Player player = gamePanel.player;
     private enum Status {
-        Chasing,Waiting,Attacking,OnAttack,Dead;
+        Chasing,Waiting,Attacking,OnAttack,Dead
     }
     public Status monsterStatus = Status.Chasing;
     Monster(){
@@ -47,7 +47,7 @@ public class Monster extends Entity implements Runnable {
         int H;
 
         boolean notMeeting = true;//当notMeeting == False 时标志找到玩家，需要更好的检测方法
-        NextStep(Location currentLoc,Location destination,Direction dir,boolean notMeeting){
+        public NextStep(Location currentLoc,Location destination,Direction dir,boolean notMeeting){
             this.destination = destination;
             this.currentLoc = currentLoc;
             this.direction = dir;
@@ -122,6 +122,7 @@ public class Monster extends Entity implements Runnable {
         return null;
     }
 
+
     /**
      * 获取当前位置上可以移动的方向列表。
      * @return 可行的方向列表
@@ -159,10 +160,10 @@ public class Monster extends Entity implements Runnable {
                         attack(player);
                     }
                     case OnAttack:{
-                        onAttack();
+                        onAttack();//未实现
                     }
                     case Waiting:{
-
+                        patrol();
                     }
                 }
             } else{
@@ -176,14 +177,25 @@ public class Monster extends Entity implements Runnable {
      * 检测HP和玩家的距离来更新怪物状态
      */
     public void updateStatus(){
-
+        if(this.HP == 0)
+            this.monsterStatus = Status.Dead;
+        else {
+            int manhattan = Math.abs(this.loc.getXPosition() - this.player.loc.getXPosition()) + Math.abs(this.loc.getYPosition() - this.player.loc.getYPosition());
+            if (manhattan == 1)
+                this.monsterStatus = Status.Attacking;
+            else if (manhattan > 1 && manhattan <= 10)
+                this.monsterStatus = Status.Chasing;
+            else if (manhattan > 10)
+                this.monsterStatus = Status.Waiting;
+            //OnAttack功能尚未实现
+        }
     }
 
     /**
      * 作出攻击行为
      */
     public void attack(Player player){
-
+        //player.HP -= this.attack;
     }
 
     /**
@@ -204,6 +216,15 @@ public class Monster extends Entity implements Runnable {
             //近战要近身才进入战斗状态，远程考虑在一条直线即可
         }while(nextStep.notMeeting);
 
+    }
+
+    /**
+     * 待机状态，无目的漫游
+     */
+    public void patrol(){
+        Direction randir = Direction.getRandomDirection();
+        if(Location.canMove(this,randir))
+            Location.moveOneStep(this,randir);
     }
 
     /**

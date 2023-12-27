@@ -14,7 +14,8 @@ public class Ball extends Entity implements Runnable{
     private int coldDownTime;
     private int damage;
     private Direction dir;
-    private Image []img;
+    boolean isLive = true;  //子弹是否还存活，以判断是否还继续绘制子弹
+    private Image img;
 
     public Ball(Location loc, int speed, int coldDownTime, int damage, Direction dir) {
         this.x = loc.getXPosition();
@@ -74,10 +75,24 @@ public class Ball extends Entity implements Runnable{
                     y-=speed*dir.getDy();
                     break;
             }
+            loc.setXPosition(x);
+            loc.setYPosition(y);
+            //每移动一步，判断子弹是否还能再此方向上继续移动
+            if(!Location.canMove(this,dir)){
+                isLive = false;
+                break;
+            }
+            //判断子弹是否越出边界
             if(!(x>=0&&x<=768&&y>=0&&y<=576)){
+                isLive = false;
                 break;
             }
         }
+    }
+
+    public void draw(Graphics2D g2d){
+        Image img = getImage("rock_down_1.png");
+        g2d.drawImage(img, loc.getXPosition(), loc.getYPosition(), gamePanel.tileSize, gamePanel.tileSize, null);
     }
 
     public int getX() {

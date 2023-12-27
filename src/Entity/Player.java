@@ -18,6 +18,7 @@ public class Player extends Entity{
     private int coldDown;//设定的冷却时间
     private int CD;//现在武器剩余的冷却时间
     private static final int BLOOD_LENGTH=40;//血条原长度
+    private int onAttackState;//受攻击的间隔
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -97,6 +98,7 @@ public class Player extends Entity{
                 //Fireball.greatPower();
                 this.setCD();}
         }
+
         //check tile collision
         collisionOn = false;
         gp.collisionDetector.checkTile(this);
@@ -133,6 +135,11 @@ public class Player extends Entity{
             spriteCount++;
         }
     }
+
+    /**
+     * 绘画血条、人物移动等
+     * @param g2d
+     */
     public void draw(Graphics2D g2d) {
         BufferedImage img = switch (direction) {
             case U -> (spriteNum == 1) ? up1 : (spriteNum == 2) ? up2 : null;
@@ -154,6 +161,19 @@ public class Player extends Entity{
         } else {
             g2d.drawString("fireBoll", loc.getXPosition() - 20, loc.getYPosition() - 45);
         }
+
+    }
+
+    /**
+     * 攻击的模块
+     */
+    public void attack(){
+        if(getHP() <= 0 ) return;
+        this.onAttackState = 5;
+        if(getHP() <= 0) {
+            this.setHP(0);
+            return;
+        }
     }
 
     /**
@@ -167,8 +187,17 @@ public class Player extends Entity{
     /**
      * 进入CD
      */
-    public void setCD() {
-        CD = coldDown;
-    }
+    public void setCD() {CD = coldDown;}
+
+    public int getHP() {return HP;}
+
+    public void setHP(int HP) {this.HP = HP;}
+
+    public int getSign_weapon() {return sign_weapon;}
+
+    public int getColdDown() {return coldDown;}
+
+    public int getOnAttackState() {return onAttackState;}
+
 }
 

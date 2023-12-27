@@ -2,10 +2,12 @@ package Entity;
 
 import Main.GamePanel;
 import Main.KeyHandler;
-import Entity.Direction;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 
 public class Player extends Entity{
     GamePanel gp;
@@ -14,115 +16,75 @@ public class Player extends Entity{
     public Player(GamePanel gp, KeyHandler keyH){
         this.gp = gp;
         this.keyH = keyH;
-        this.loc = new Location(0, 0);
-        this.speed = 5;
+
+        hitBox = new Rectangle(loc.getxPosition(), loc.getyPosition(), gp.tileSize, gp.tileSize);
+
+        setDefaultValues();
+        getPlayerImage();
     }
 
     public void setDefaultValues(){
-        this.loc.setxPosition(100);
-        this.loc.setyPosition(100);
+        if (this.loc == null) {
+            this.loc = new Location(100, 100);
+        } else {
+            this.loc.setxPosition(100);
+            this.loc.setyPosition(100);
+        }
         this.speed = 4;
+        direction = Direction.D;
+    }
+
+    public void getPlayerImage() {
+        try {
+            up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_up_1.png")));
+            up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_up_2.png")));
+            down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_down_1.png")));
+            down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_down_2.png")));
+            right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_right_1.png")));
+            right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_right_2.png")));
+            left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_left_1.png")));
+            left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_left_2.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void update(){
         if(keyH.upPressed){
+            direction = Direction.U;
             loc.setyPosition(loc.getyPosition()-speed);
         }
         if(keyH.downPressed){
+            direction = Direction.D;
             loc.setyPosition(loc.getyPosition()+speed);
         }
         if(keyH.leftPressed){
+            direction = Direction.L;
             loc.setxPosition(loc.getxPosition()-speed);
         }
         if(keyH.rightPressed){
+            direction = Direction.R;
             loc.setxPosition(loc.getxPosition()+speed);
+        }
+
+        if (spriteCount == 10) {
+            spriteNum = (spriteNum == 1) ? 2 : 1;
+            spriteCount = 0;
+        } else {
+            spriteCount++;
         }
     }
 
     public void draw(Graphics2D g2d) {
-        g2d.setColor(Color.RED);
-        g2d.fillRect(loc.getxPosition(), loc.getyPosition(), gp.tileSize, gp.tileSize);
-        //The pictures should be saved as .png files!
-    }
-    private int HP;//血量
-    private int sign_weapon;//等于0是剑，等于1是火球
-    private Direction dir;//表示英雄的方向
-    private int player;//等于1是P1，等于2是P2
-    private int x,y;//坐标
-    private int r;//半径
-    private int speed;//运动速度
-    private int coldDown;//设定的冷却时间
-    private  int CD;//现在武器剩余的冷却时间
-    private int[] keys;
-    private boolean bL=false, bU=false, bR=false, bD=false;
-    public Player(int x, int y, int HP,int player,int speed,int r) {
-        this.x=x;
-        this.y=y;
-        this.HP=HP;
-        this.player=player;
-        this.speed=speed;
-        this.r=r;
-        keys = new int[7];
-        if(player == 2){
-            keys[0] = KeyEvent.VK_LEFT;
-            keys[1] = KeyEvent.VK_UP;
-            keys[2] = KeyEvent.VK_RIGHT;
-            keys[3] = KeyEvent.VK_DOWN;
-            keys[4] = KeyEvent.VK_NUMPAD1;
-            keys[5] = KeyEvent.VK_NUMPAD2;
-            keys[6] = KeyEvent.VK_NUMPAD3;
-        } else {
-            keys[0] = KeyEvent.VK_A;
-            keys[1] = KeyEvent.VK_W;
-            keys[2] = KeyEvent.VK_D;
-            keys[3] = KeyEvent.VK_S;
-            keys[4] = KeyEvent.VK_J;
-            keys[5] = KeyEvent.VK_K;
-            keys[6] = KeyEvent.VK_L;
-        }
-    }
+        BufferedImage img = switch (direction) {
+            case U -> (spriteNum == 1) ? up1 : (spriteNum == 2) ? up2 : null;
+            case D -> (spriteNum == 1) ? down1 : (spriteNum == 2) ? down2 : null;
+            case L -> (spriteNum == 1) ? left1 : (spriteNum == 2) ? left2 : null;
+            case R -> (spriteNum == 1) ? right1 : (spriteNum == 2) ? right2 : null;
+            default -> null;
+        };
 
-    public void KeyPressed(KeyEvent e) {
-        int key = e.getKeyCode();
-        if(key == keys[0]) dir=Direction.L;
-        else if(key == keys[1]) dir = Direction.U;
-        else if(key == keys[2]) dir = Direction.R;
-        else if(key == keys[3]) dir = Direction.D;
-        else if(key == keys[4] && this.getCD() == 0) {
-            //this.setState();
-            this.setCD();
-        } else if(key == keys[5]){
-            sign_weapon=(sign_weapon+1)%2;
-        } else if(key == keys[6] && this.getCD() == 0){
-            if(sign_weapon==1) {
-                ((Fireball) this.getCurrentWeapon()).setUltimateState();
-                this.getCurrentWeapon().setColdDown();
-            }
-        }
-        locateDirection();
-    }
-
-    /**
-     * @return CD
-     * 返回现在的冷却时间
-     */
-    public int getCD(){
-        return this.CD;
-    }
-
-
-    public void setCD(){
-        CD=coldDown;
-    }
-    public void locateDirection() {
-        if(bL && !bU && !bR && !bD) dir = Direction.L;
-        else if(bL && bU && !bR && !bD) dir = Direction.LU;
-        else if(!bL && bU && !bR && !bD) dir = Direction.U;
-        else if(!bL && bU && bR && !bD) dir = Direction.RU;
-        else if(!bL && !bU && bR && !bD) dir = Direction.R;
-        else if(!bL && !bU && bR && bD) dir = Direction.RD;
-        else if(!bL && !bU && !bR && bD) dir = Direction.D;
-        else if(bL && !bU && !bR && bD) dir = Direction.LD;
+        g2d.drawImage(img, loc.getxPosition(), loc.getyPosition(), gp.tileSize, gp.tileSize, null);
     }
 }
 

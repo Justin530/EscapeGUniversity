@@ -24,12 +24,12 @@ public class TileManager {
     }
 
     public void getTileImage() {
-        try {
-            // todo
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            // todo
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void LoadMap(String filePath) {

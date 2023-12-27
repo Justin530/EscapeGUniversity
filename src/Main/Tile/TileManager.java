@@ -124,11 +124,32 @@ public class TileManager {
             int screenX = worldX - gp.player.worldLoc.getXPosition() + gp.player.screenLoc.getXPosition();
             int screenY = worldY - gp.player.worldLoc.getYPosition() + gp.player.screenLoc.getYPosition();
 
+            //Stop moving the camera at the edge of the world
+            if (gp.player.screenLoc.getXPosition() > gp.player.worldLoc.getXPosition()) {
+                screenX = worldX;
+            }
+            if (gp.player.screenLoc.getYPosition() > gp.player.worldLoc.getYPosition()) {
+                screenY = worldY;
+            }
+            if (gp.screenWidth - gp.player.screenLoc.getXPosition() > gp.worldWidth - gp.player.worldLoc.getXPosition()) {
+                screenX = gp.screenWidth - gp.worldWidth + worldX;
+            }
+            if (gp.screenHeight - gp.player.screenLoc.getYPosition() > gp.worldHeight - gp.player.worldLoc.getYPosition()) {
+                screenY = gp.screenHeight - gp.worldHeight + worldY;
+            }
+
+            //Draw the tile
             if (worldX + gp.tileSize> gp.player.worldLoc.getXPosition() - gp.player.screenLoc.getXPosition() &&
                 worldX - gp.tileSize< gp.player.worldLoc.getXPosition() + gp.screenWidth - gp.player.screenLoc.getXPosition() &&
                 worldY + gp.tileSize> gp.player.worldLoc.getYPosition() - gp.player.screenLoc.getYPosition() &&
                 worldY - gp.tileSize< gp.player.worldLoc.getYPosition() + gp.screenHeight - gp.player.screenLoc.getYPosition() &&
                 tileNum != 0) {
+                g2d.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            }
+            else if (gp.player.screenLoc.getXPosition() > gp.player.worldLoc.getXPosition() ||
+                    gp.player.screenLoc.getYPosition() > gp.player.worldLoc.getYPosition() ||
+                    gp.screenWidth - gp.player.screenLoc.getXPosition() > gp.worldWidth - gp.player.worldLoc.getXPosition() ||
+                    gp.screenHeight - gp.player.screenLoc.getYPosition() > gp.worldHeight - gp.player.worldLoc.getYPosition()) {
                 g2d.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
             }
 

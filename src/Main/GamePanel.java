@@ -5,6 +5,7 @@ import Main.Tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -20,16 +21,29 @@ public class GamePanel extends JPanel implements Runnable{
     //World Settings
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
-    public final int worldWidth = tileSize * maxWorldCol;// 800 pixels
-    public final int worldHeight = tileSize * maxWorldRow;// 800 pixels
+    public final int worldWidth = tileSize * maxWorldCol;// 2400 pixels
+    public final int worldHeight = tileSize * maxWorldRow;// 2400 pixels
 
     final int FPS = 60;
 
-    KeyHandler keyHandler = new KeyHandler();
-    Thread gameThread;
-    public Player player = new Player(this, keyHandler);
+    //Controllers of the game
+    KeyHandler keyHandler = new KeyHandler(this);
     TileManager tileManager = new TileManager(this);
     public CollisionDetector collisionDetector = new CollisionDetector(this);
+    public AssetSetter assetSetter = new AssetSetter(this);
+    public UI ui = new UI(this);
+    Thread gameThread;
+
+    //entities and objects
+    public Player player = new Player(this, keyHandler);
+    public Entity[] monsters = new Entity[50];
+    ArrayList<Entity> entityList = new ArrayList<Entity>();
+
+    //game states
+    public int gameState;
+    public final int titleState = 0;
+    public final int playState = 1;
+    public final int pauseState = 2;
 
     public GamePanel(){
         setFocusable(true);
@@ -37,6 +51,15 @@ public class GamePanel extends JPanel implements Runnable{
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
         addKeyListener(keyHandler);
+    }
+
+    /**
+     * set up the objects, npc, etc.
+     */
+    public void setupGame() {
+        //assetSetter.setMonsters();
+
+        gameState = playState;
     }
 
     public void startGameThread() {
@@ -103,7 +126,12 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     public void update() {
-        player.update();
+        if (gameState == playState) {
+            //Update the player
+            player.update();
+        } else {
+            //todo
+        }
     }
 
     public void paintComponent(Graphics g) {//Draw the screen
@@ -111,9 +139,21 @@ public class GamePanel extends JPanel implements Runnable{
 
         Graphics2D g2d = (Graphics2D) g;
 
+        //Draw the world
         tileManager.draw(g2d);
 
+        //Draw the title screen
+        if (gameState == titleState) {
+
+        } else {
+            //todo
+        }
+
+        //Draw the player
         player.draw(g2d);
+
+        //UI
+        ui.draw(g2d);
 
         g2d.dispose();
     }

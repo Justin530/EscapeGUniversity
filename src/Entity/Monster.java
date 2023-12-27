@@ -31,7 +31,7 @@ public class Monster extends Entity implements Runnable {
         Chasing,Waiting,Attacking,OnAttack,Dead
     }
     public Status monsterStatus = Status.Chasing;
-    Monster(){
+    public Monster(){
     }
 
 

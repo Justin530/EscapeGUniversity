@@ -105,7 +105,7 @@ public class Player extends Entity{
             }
             //check tile collision
             collisionOn = false;
-            gp.collisionDetector.checkTile(this);
+            //gp.collisionDetector.checkTile(this);
 
             //if collision is detected, player cannot move
             if (!collisionOn) {
@@ -140,8 +140,6 @@ public class Player extends Entity{
                 spriteCount++;
             }
         }
-
-
     }
 
     /**
@@ -156,7 +154,22 @@ public class Player extends Entity{
             case R -> (spriteNum == 1) ? right1 : (spriteNum == 2) ? right2 : null;
             default -> null;
         };
-        g2d.drawImage(img, screenLoc.getXPosition(), screenLoc.getYPosition(), gp.tileSize, gp.tileSize, null);
+
+        int x = screenLoc.getXPosition(), y = screenLoc.getYPosition();
+        if (screenLoc.getXPosition() > worldLoc.getXPosition()) {
+            x = worldLoc.getXPosition();
+        }
+        if (screenLoc.getYPosition() > worldLoc.getYPosition()) {
+            y  = worldLoc.getYPosition();
+        }
+        if (gp.screenWidth - screenLoc.getXPosition() > gp.worldWidth - worldLoc.getXPosition()) {
+            x = gp.screenWidth - gp.worldWidth + worldLoc.getXPosition();
+        }
+        if (gp.screenHeight - screenLoc.getYPosition() > gp.worldHeight - worldLoc.getYPosition()) {
+            y = gp.screenHeight - gp.worldHeight + worldLoc.getYPosition();
+        }
+
+        g2d.drawImage(img, x, y, gp.tileSize, gp.tileSize, null);
         //武器名
         if (sign_weapon == 0) {
             g2d.drawString("sword", screenLoc.getXPosition() - 20, screenLoc.getYPosition() - 45);

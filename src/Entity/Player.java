@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Random;
 
@@ -26,6 +27,11 @@ public class Player extends Entity{
     private int begin=350;
     private int x;
     private int y;
+    protected int onAttackState;
+    protected int damage;
+    protected int attackRange;
+    protected int attackAngle;
+
 
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
@@ -43,6 +49,31 @@ public class Player extends Entity{
         this.r=1;
         setDefaultValues();
         getPlayerImage();
+    }
+    protected Player host;
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+    public double getDistance(int x1, int y1, int x2, int y2){
+        double deltaX = x1 - x2;
+        double deltaY = y1 - y2;
+        return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+    }
+    public int getAttackRange() {
+        return attackRange;
+    }
+    public void Attack(){
+    }
+
+    private void onAttack() {
     }
 
 
@@ -200,6 +231,11 @@ public class Player extends Entity{
         this.deadState = -1;
         this.begin = 350;
     }
-
+    public int checkOnAttack(){
+        return (this.onAttackState);
+    }
+    public void resetOnAttackState(){
+        this.onAttackState = 0;
+    }
 }
 

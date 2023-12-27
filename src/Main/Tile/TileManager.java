@@ -1,5 +1,6 @@
 package Main.Tile;
 
+import Entity.Entity;
 import Main.GamePanel;
 
 import java.awt.*;
@@ -9,10 +10,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class TileManager {
-
     GamePanel gp;
-    Tile[] tile;
-    int[][] mapTileNum;// 2D array of tile numbers
+    public Tile[] tile;
+    public int[][] mapTileNum;// 2D array of tile numbers
 
     public TileManager(GamePanel gp){
         this.gp = gp;
@@ -26,7 +26,7 @@ public class TileManager {
     public void getTileImage() {
         try {
             // todo
-
+            
         } catch (IOException e) {
             e.printStackTrace();
         }

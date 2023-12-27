@@ -23,6 +23,7 @@ public class GamePanel extends JPanel implements Runnable{
     Thread gameThread;
     Player player = new Player(this, keyHandler);
     TileManager tileManager = new TileManager(this);
+    public CollisionDetector collisionDetector = new CollisionDetector(this);
 
     public GamePanel(){
         setFocusable(true);

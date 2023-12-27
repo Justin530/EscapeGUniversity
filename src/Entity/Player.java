@@ -17,7 +17,12 @@ public class Player extends Entity{
         this.gp = gp;
         this.keyH = keyH;
 
+        //the hitBox is smaller than the actual image, x and y values are calculated from the image
         hitBox = new Rectangle(loc.getxPosition(), loc.getyPosition(), gp.tileSize, gp.tileSize);
+        hitBox.x = 8;//start from the corner of the image
+        hitBox.y = 16;
+        hitBox.width = 32;
+        hitBox.height = 32;
 
         setDefaultValues();
         getPlayerImage();
@@ -52,19 +57,29 @@ public class Player extends Entity{
     public void update(){
         if(keyH.upPressed){
             direction = Direction.U;
-            loc.setyPosition(loc.getyPosition()-speed);
         }
         if(keyH.downPressed){
             direction = Direction.D;
-            loc.setyPosition(loc.getyPosition()+speed);
         }
         if(keyH.leftPressed){
             direction = Direction.L;
-            loc.setxPosition(loc.getxPosition()-speed);
         }
         if(keyH.rightPressed){
             direction = Direction.R;
-            loc.setxPosition(loc.getxPosition()+speed);
+        }
+
+        //check tile collision
+        collisionOn = false;
+        gp.collisionDetector.checkTile(this);
+
+        //if collision is detected, player cannot move
+        if (!collisionOn) {
+            switch (direction) {
+                case U -> loc.setyPosition(loc.getyPosition() - speed);
+                case D -> loc.setyPosition(loc.getyPosition() + speed);
+                case L -> loc.setxPosition(loc.getxPosition() - speed);
+                case R -> loc.setxPosition(loc.getxPosition() + speed);
+            }
         }
 
         if (spriteCount == 10) {

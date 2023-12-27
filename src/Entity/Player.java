@@ -8,16 +8,25 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Random;
 
 public class Player extends Entity{
+    private static final int MAX_HP = 1200;
     GamePanel gp;
     KeyHandler keyH;
+    private Direction dir;
     private static final int BLOOD=1200;
     private int HP;//血量
     private int sign_weapon;//等于0是剑，等于1是火球
+    private int r;//半径
     private int coldDown;//设定的冷却时间
     private int CD;//现在武器剩余的冷却时间
     private static final int BLOOD_LENGTH=40;//血条原长度
+    private int deadState;
+    private int begin=350;
+    private int x;
+    private int y;
+
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -27,8 +36,11 @@ public class Player extends Entity{
         hitBox.y = 16;
         hitBox.width = 32;
         hitBox.height = 32;
+        this.loc = new Location(100, 100);
+        this.speed = 5;
         this.HP=BLOOD;
         this.coldDown = 10;
+        this.r=1;
         setDefaultValues();
         getPlayerImage();
     }
@@ -60,9 +72,6 @@ public class Player extends Entity{
         }
     }
 
-    /**
-     * 处理键盘的输入
-     */
     public void update(){
         if(keyH.upPressed){
             direction = Direction.U;
@@ -76,27 +85,7 @@ public class Player extends Entity{
         if(keyH.rightPressed){
             direction = Direction.R;
         }
-        if(keyH.upPressed && keyH.leftPressed){
-            direction = Direction.LU;
-        }
-        if(keyH.downPressed && keyH.leftPressed){
-            direction = Direction.LD;
-        }
-        if(keyH.rightPressed && keyH.upPressed){
-            direction = Direction.RU;
-        }
-        if(keyH.rightPressed && keyH.downPressed){
-            direction = Direction.RD;
-        }
-        if (keyH.attackPressed && this.getCD() == 0) {
-            this.setCD();
-        } else if (keyH.changeWeaponPressed) {
-            sign_weapon=(sign_weapon+1)%2;
-        } else if(keyH.greatPressed && this.getCD() == 0){
-            if(sign_weapon==1) {
-                //Fireball.greatPower();
-                this.setCD();}
-        }
+
         //check tile collision
         collisionOn = false;
         gp.collisionDetector.checkTile(this);
@@ -108,24 +97,9 @@ public class Player extends Entity{
                 case D -> loc.setYPosition(loc.getYPosition() + speed);
                 case L -> loc.setXPosition(loc.getXPosition() - speed);
                 case R -> loc.setXPosition(loc.getXPosition() + speed);
-                case LD -> {
-                    loc.setXPosition(loc.getXPosition() - speed);
-                    loc.setYPosition(loc.getYPosition() + speed);
-                }
-                case RD -> {
-                    loc.setYPosition(loc.getYPosition() + speed);
-                    loc.setXPosition(loc.getXPosition() + speed);
-                }
-                case LU -> {
-                    loc.setXPosition(loc.getXPosition() - speed);
-                    loc.setYPosition(loc.getYPosition() - speed);
-                }
-                case RU -> {
-                    loc.setXPosition(loc.getXPosition() + speed);
-                    loc.setYPosition(loc.getYPosition() - speed);
-                }
             }
         }
+
         if (spriteCount == 10) {
             spriteNum = (spriteNum == 1) ? 2 : 1;
             spriteCount = 0;
@@ -133,6 +107,50 @@ public class Player extends Entity{
             spriteCount++;
         }
     }
+
+    /*
+     * 多四个斜角方向
+     * */
+//    public void update() {
+//        if (keyH.upPressed && keyH.leftPressed) {
+//            dir = Direction.LU;
+//            loc.setYPosition(loc.getYPosition() - (int) (speed * r * Math.cos(Math.toRadians(45))));
+//            loc.setXPosition(loc.getXPosition() - (int) (speed * r * Math.cos(Math.toRadians(45))));
+//        } else if (keyH.downPressed && keyH.leftPressed) {
+//            loc.setYPosition(loc.getYPosition() + (int) (speed * r * Math.cos(Math.toRadians(45))));
+//            loc.setXPosition(loc.getXPosition() - (int) (speed * r * Math.cos(Math.toRadians(45))));
+//        } else if (keyH.rightPressed && keyH.upPressed) {
+//            dir = Direction.RU;
+//            loc.setXPosition(loc.getXPosition() + (int) (speed * r * Math.cos(Math.toRadians(45))));
+//            loc.setYPosition(loc.getYPosition() - (int) (speed * r * Math.cos(Math.toRadians(45))));
+//        } else if (keyH.rightPressed && keyH.downPressed) {
+//            dir = Direction.RD;
+//            loc.setXPosition(loc.getXPosition() + (int) (speed * r * Math.cos(Math.toRadians(45))));
+//            loc.setYPosition(loc.getYPosition() + (int) (speed * r * Math.cos(Math.toRadians(45))));
+//        } else if (keyH.upPressed) {
+//            dir = Direction.U;
+//            loc.setYPosition(loc.getYPosition() - speed);
+//        } else if (keyH.downPressed) {
+//            dir = Direction.D;
+//            loc.setYPosition(loc.getYPosition() + speed);
+//        } else if (keyH.leftPressed) {
+//            dir = Direction.L;
+//            loc.setXPosition(loc.getXPosition() - speed);
+//        } else if (keyH.rightPressed) {
+//            dir = Direction.R;
+//            loc.setXPosition(loc.getXPosition() + speed);
+//        } else if (keyH.attackPressed && this.getCD() == 0) {
+//            this.setCD();
+//        } else if (keyH.changeWeaponPressed) {
+//            sign_weapon=(sign_weapon+1)%2;
+//        } else if(keyH.greatPressed && this.getCD() == 0){
+//            if(sign_weapon==1) {
+//                //Fireball.greatPower();
+//                this.setCD();
+//            }
+//        }
+//
+//    }
     public void draw(Graphics2D g2d) {
         BufferedImage img = switch (direction) {
             case U -> (spriteNum == 1) ? up1 : (spriteNum == 2) ? up2 : null;
@@ -170,5 +188,18 @@ public class Player extends Entity{
     public void setCD() {
         CD = coldDown;
     }
+    public void setHP(int HP) {
+        if(HP == 0 )
+            this.collisionOn = false;
+        this.HP = HP;
+    }
+    public void resetBegin() {
+        this.x = (new Random().nextInt(100) % 2 == 0) ? 340 : 620;
+        this.y = 280;
+        this.setHP(MAX_HP);
+        this.deadState = -1;
+        this.begin = 350;
+    }
+
 }
 

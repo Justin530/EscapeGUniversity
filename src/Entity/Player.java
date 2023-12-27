@@ -12,35 +12,41 @@ import java.util.Objects;
 public class Player extends Entity{
     GamePanel gp;
     KeyHandler keyH;
+    public final Location screenLoc = new Location(0, 0);
     private static final int BLOOD=1200;
     private int HP;//血量
     private int sign_weapon;//等于0是剑，等于1是火球
     private int coldDown;//设定的冷却时间
     private int CD;//现在武器剩余的冷却时间
-    private static final int BLOOD_LENGTH=40;//血条原长度
+    private static final int BLOOD_LENGTH = 4;//血条原长度
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
+        setDefaultValues();
+
         //the hitBox is smaller than the actual image, x and y values are calculated from the image
-        hitBox = new Rectangle(loc.getXPosition(), loc.getYPosition(), gp.tileSize, gp.tileSize);
+        hitBox = new Rectangle(worldLoc.getXPosition(), worldLoc.getYPosition(), gp.tileSize, gp.tileSize);
         hitBox.x = 8;//start from the corner of the image
         hitBox.y = 16;
         hitBox.width = 32;
         hitBox.height = 32;
         this.HP=BLOOD;
         this.coldDown = 10;
-        setDefaultValues();
+
         getPlayerImage();
     }
 
 
     public void setDefaultValues(){
-        if (this.loc == null) {
-            this.loc = new Location(100, 100);
+        if (this.worldLoc == null) {
+            this.worldLoc = new Location(100, 100);
         } else {
-            this.loc.setXPosition(100);
-            this.loc.setYPosition(100);
+            this.worldLoc.setXPosition(100);
+            this.worldLoc.setYPosition(100);
         }
+        this.screenLoc.setXPosition(gp.screenWidth / 2 - gp.tileSize / 2);
+        this.screenLoc.setYPosition(gp.screenHeight / 2 - gp.tileSize / 2);
+
         this.speed = 4;
         direction = Direction.D;
     }
@@ -64,68 +70,71 @@ public class Player extends Entity{
      * 处理键盘的输入
      */
     public void update(){
-        if(keyH.upPressed){
-            direction = Direction.U;
-        }
-        if(keyH.downPressed){
-            direction = Direction.D;
-        }
-        if(keyH.leftPressed){
-            direction = Direction.L;
-        }
-        if(keyH.rightPressed){
-            direction = Direction.R;
-        }
-        if(keyH.upPressed && keyH.leftPressed){
-            direction = Direction.LU;
-        }
-        if(keyH.downPressed && keyH.leftPressed){
-            direction = Direction.LD;
-        }
-        if(keyH.rightPressed && keyH.upPressed){
-            direction = Direction.RU;
-        }
-        if(keyH.rightPressed && keyH.downPressed){
-            direction = Direction.RD;
-        }
-        if (keyH.attackPressed && this.getCD() == 0) {
-            this.setCD();
-        } else if (keyH.changeWeaponPressed) {
-            sign_weapon=(sign_weapon+1)%2;
-        } else if(keyH.greatPressed && this.getCD() == 0){
-            if(sign_weapon==1) {
-                //Fireball.greatPower();
-                this.setCD();}
-        }
-        //check tile collision
-        collisionOn = false;
-        gp.collisionDetector.checkTile(this);
+        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+            if(keyH.upPressed){
+                direction = Direction.U;
+            }
+            if(keyH.downPressed){
+                direction = Direction.D;
+            }
+            if(keyH.leftPressed){
+                direction = Direction.L;
+            }
+            if(keyH.rightPressed){
+                direction = Direction.R;
+            }
+            if(keyH.upPressed && keyH.leftPressed){
+                direction = Direction.LU;
+            }
+            if(keyH.downPressed && keyH.leftPressed){
+                direction = Direction.LD;
+            }
+            if(keyH.rightPressed && keyH.upPressed){
+                direction = Direction.RU;
+            }
+            if(keyH.rightPressed && keyH.downPressed){
+                direction = Direction.RD;
+            }
+            if (keyH.attackPressed && this.getCD() == 0) {
+                this.setCD();
+            } else if (keyH.changeWeaponPressed) {
+                sign_weapon=(sign_weapon+1)%2;
+            } else if(keyH.greatPressed && this.getCD() == 0){
+                if(sign_weapon==1) {
+                    //Fireball.greatPower();
+                    this.setCD();}
+            }
+            //check tile collision
+            collisionOn = false;
+            gp.collisionDetector.checkTile(this);
 
-        //if collision is detected, player cannot move
-        if (!collisionOn) {
-            switch (direction) {
-                case U -> loc.setYPosition(loc.getYPosition() - speed);
-                case D -> loc.setYPosition(loc.getYPosition() + speed);
-                case L -> loc.setXPosition(loc.getXPosition() - speed);
-                case R -> loc.setXPosition(loc.getXPosition() + speed);
-                case LD -> {
-                    loc.setXPosition(loc.getXPosition() - speed);
-                    loc.setYPosition(loc.getYPosition() + speed);
-                }
-                case RD -> {
-                    loc.setYPosition(loc.getYPosition() + speed);
-                    loc.setXPosition(loc.getXPosition() + speed);
-                }
-                case LU -> {
-                    loc.setXPosition(loc.getXPosition() - speed);
-                    loc.setYPosition(loc.getYPosition() - speed);
-                }
-                case RU -> {
-                    loc.setXPosition(loc.getXPosition() + speed);
-                    loc.setYPosition(loc.getYPosition() - speed);
+            //if collision is detected, player cannot move
+            if (!collisionOn) {
+                switch (direction) {
+                    case U -> worldLoc.setYPosition(worldLoc.getYPosition() - speed);
+                    case D -> worldLoc.setYPosition(worldLoc.getYPosition() + speed);
+                    case L -> worldLoc.setXPosition(worldLoc.getXPosition() - speed);
+                    case R -> worldLoc.setXPosition(worldLoc.getXPosition() + speed);
+                    case LD -> {
+                        worldLoc.setXPosition(worldLoc.getXPosition() - speed);
+                        worldLoc.setYPosition(worldLoc.getYPosition() + speed);
+                    }
+                    case RD -> {
+                        worldLoc.setYPosition(worldLoc.getYPosition() + speed);
+                        worldLoc.setXPosition(worldLoc.getXPosition() + speed);
+                    }
+                    case LU -> {
+                        worldLoc.setXPosition(worldLoc.getXPosition() - speed);
+                        worldLoc.setYPosition(worldLoc.getYPosition() - speed);
+                    }
+                    case RU -> {
+                        worldLoc.setXPosition(worldLoc.getXPosition() + speed);
+                        worldLoc.setYPosition(worldLoc.getYPosition() - speed);
+                    }
                 }
             }
         }
+
         if (spriteCount == 10) {
             spriteNum = (spriteNum == 1) ? 2 : 1;
             spriteCount = 0;
@@ -141,18 +150,18 @@ public class Player extends Entity{
             case R -> (spriteNum == 1) ? right1 : (spriteNum == 2) ? right2 : null;
             default -> null;
         };
-        g2d.drawImage(img, loc.getXPosition(), loc.getYPosition(), gp.tileSize, gp.tileSize, null);
+        g2d.drawImage(img, screenLoc.getXPosition(), screenLoc.getYPosition(), gp.tileSize, gp.tileSize, null);
         //血条
-        Color c = g2d.getColor();
-        g2d.setColor(Color.RED);
-        g2d.drawRect(loc.getXPosition() - 20, loc.getYPosition() - 40, BLOOD_LENGTH, 7);
-        g2d.fillRect( loc.getXPosition()- 20, loc.getYPosition() - 40, HP, 7);
-        g2d.setColor(c);
+//        Color c = g2d.getColor();
+//        g2d.setColor(Color.RED);
+//        g2d.drawRect(screenLoc.getXPosition() - 20, screenLoc.getYPosition() - 40, BLOOD_LENGTH, 7);
+//        g2d.fillRect( screenLoc.getXPosition()- 20, screenLoc.getYPosition() - 40, 40, 7);
+//        g2d.setColor(c);
         //武器名
         if (sign_weapon == 0) {
-            g2d.drawString("sword", loc.getXPosition() - 20, loc.getYPosition() - 45);
+            g2d.drawString("sword", worldLoc.getXPosition() - 20, worldLoc.getYPosition() - 45);
         } else {
-            g2d.drawString("fireBoll", loc.getXPosition() - 20, loc.getYPosition() - 45);
+            g2d.drawString("fireBoll", worldLoc.getXPosition() - 20, worldLoc.getYPosition() - 45);
         }
     }
 

@@ -2,30 +2,83 @@ package Main.Tile;
 
 import Entity.Entity;
 import Main.GamePanel;
+import Main.UtilityTool;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class TileManager {
     GamePanel gp;
-    public Tile[] tile;
+    public Tile[] tile;// stores all types of tiles
     public int[][] mapTileNum;// 2D array of tile numbers
+    ArrayList<String> fileNames = new ArrayList<String>();
+    ArrayList<String> collisionStatus = new ArrayList<String>();
 
     public TileManager(GamePanel gp){
         this.gp = gp;
-        tile = new Tile[50];
-        mapTileNum = new int[gp.maxScreenCol][gp.maxScreenRow];
 
+        //read tile information from file
+        InputStream is = getClass().getResourceAsStream("/res/map/tiledata.txt");
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+        //getting tile names and collision info from the file
+        String line;
+
+        try {
+            while ((line = br.readLine()) != null) {
+                fileNames.add(line);
+                collisionStatus.add(br.readLine());
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        tile = new Tile[fileNames.size()];
         getTileImage();
-        LoadMap("/res/map/map_demo.txt");
+
+        mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
+
+        LoadMap("/res/map/worldmap.txt");
     }
 
     public void getTileImage() {
         try {
-            // todo
+            for (int i = 0; i < fileNames.size(); i ++) {
+                String fileName;
+                boolean collision;
+
+                //get a file name
+                fileName = fileNames.get(i);
+
+                //get collision status
+                if (collisionStatus.get(i).equals("true")) {
+                    collision = true;
+                } else {
+                    collision = false;
+                }
+                setup(i, fileName, collision);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setup(int idx, String imageName, boolean collision) {
+        UtilityTool utilityTool = new UtilityTool();
+
+        try {
+            tile[idx] = new Tile();
+            tile[idx].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/tile/" + imageName)));
+            tile[idx].image = utilityTool.scaleImage(tile[idx].image, gp.tileSize, gp.tileSize);
+            tile[idx].collision = collision;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,10 +92,16 @@ public class TileManager {
 
             int col = 0, row = 0;
 
-            while (col < gp.maxScreenCol && row < gp.maxScreenRow) {
-                mapTileNum[col][row] = Integer.parseInt(br.readLine());
-                col++;
-                if (col == gp.maxScreenCol) {
+            while (col < gp.maxWorldCol && row < gp.maxWorldRow) {
+                String line = br.readLine();
+                String[] tokens = line.split(" ");
+
+                for (int i = 0; i < tokens.length; i++) {
+                    mapTileNum[col][row] = Integer.parseInt(tokens[i]);
+                    col++;
+                }
+
+                if (col == gp.maxWorldCol) {
                     col = 0;
                     row++;
                 }
@@ -55,19 +114,28 @@ public class TileManager {
     }
 
     public void draw(Graphics2D g2d) {
-        int col = 0, row = 0;
-        int x = 0, y = 0;
+        int worldCol = 0, worldRow = 0;
 
-        while (col < gp.maxScreenCol && row < gp.maxScreenRow) {
-            x = col * gp.tileSize;
-            y = row * gp.tileSize;
+        while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
+            int tileNum = mapTileNum[worldCol][worldRow];
 
-            g2d.drawImage(tile[mapTileNum[col][row]].image, x, y, gp.tileSize, gp.tileSize, null);
+            int worldX = worldCol * gp.tileSize;
+            int worldY = worldRow * gp.tileSize;
+            int screenX = worldX - gp.player.worldLoc.getXPosition() + gp.player.screenLoc.getXPosition();
+            int screenY = worldY - gp.player.worldLoc.getYPosition() + gp.player.screenLoc.getYPosition();
 
-            col++;
-            if (col == gp.maxScreenCol) {
-                col = 0;
-                row++;
+            if (worldX + gp.tileSize> gp.player.worldLoc.getXPosition() - gp.player.screenLoc.getXPosition() &&
+                worldX - gp.tileSize< gp.player.worldLoc.getXPosition() + gp.screenWidth - gp.player.screenLoc.getXPosition() &&
+                worldY + gp.tileSize> gp.player.worldLoc.getYPosition() - gp.player.screenLoc.getYPosition() &&
+                worldY - gp.tileSize< gp.player.worldLoc.getYPosition() + gp.screenHeight - gp.player.screenLoc.getYPosition() &&
+                tileNum != 0) {
+                g2d.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            }
+
+            worldCol++;
+            if (worldCol == gp.maxWorldCol) {
+                worldCol = 0;
+                worldRow++;
             }
         }
     }

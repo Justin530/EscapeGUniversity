@@ -1,7 +1,5 @@
 package Entity;
 
-import Main.GamePanel;
-
 public class Location {
     private int xPosition;
     private int yPosition;
@@ -50,7 +48,7 @@ public class Location {
      * @param direction
      */
     public static void moveOneStep(Entity entity, Direction direction) {
-            entity.loc.setXPosition(entity.loc.getXPosition() + direction.getDx()*entity.speed);
-            entity.loc.setYPosition(entity.loc.getYPosition() + direction.getDy()*entity.speed);
+            entity.worldLoc.setXPosition(entity.worldLoc.getXPosition() + direction.getDx()*entity.speed);
+            entity.worldLoc.setYPosition(entity.worldLoc.getYPosition() + direction.getDy()*entity.speed);
     }
 }

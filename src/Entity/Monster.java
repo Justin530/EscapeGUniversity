@@ -1,7 +1,5 @@
 package Entity;
 
-import Main.GamePanel;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -77,7 +75,7 @@ public class Monster extends Entity implements Runnable {
             if (monsterStatus != Status.Dead) {
                 switch (monsterStatus) {
                     case Chasing: {
-                        move(player.loc);
+                        move(player.worldLoc);
                     }
                     case Attacking: {
                         attack(player);
@@ -143,6 +141,6 @@ public class Monster extends Entity implements Runnable {
             default -> null;
         };
 
-        g2d.drawImage(img, loc.getXPosition(), loc.getYPosition(), gamePanel.tileSize, gamePanel.tileSize, null);
+        g2d.drawImage(img, worldLoc.getXPosition(), worldLoc.getYPosition(), gamePanel.tileSize, gamePanel.tileSize, null);
     }
 }

@@ -34,7 +34,9 @@ public class Location {
      * @return
      */
     public static boolean canMove(Entity entity, Direction direction){
-      return true;
+      entity.collisionOn = false;
+      entity.gamePanel.collisionDetector.checkTile(entity);
+      return entity.collisionOn;
     }
 
 
@@ -45,7 +47,7 @@ public class Location {
      * @param direction
      */
     public static void moveOneStep(Entity entity, Direction direction) {
-            entity.loc.setXPosition(entity.loc.getXPosition() + direction.getDx());
-            entity.loc.setYPosition(entity.loc.getYPosition() + direction.getDy());
+            entity.loc.setXPosition(entity.loc.getXPosition() + direction.getDx()*entity.speed);
+            entity.loc.setYPosition(entity.loc.getYPosition() + direction.getDy()*entity.speed);
     }
 }

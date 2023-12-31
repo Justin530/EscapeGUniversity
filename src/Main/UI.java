@@ -48,7 +48,9 @@ public class UI {
             drawPlayerLife();
             drawPauseScreen();
         }
-
+        if (gp.gameState == gp.gameOverState) {
+            drawGameOverScreen();
+        }
     }
 
     public void drawPauseScreen(){
@@ -94,4 +96,34 @@ public class UI {
         }
     };
 
+    public void drawGameOverScreen(){
+        g2d.setColor(new Color(0, 0, 0, 150));
+        g2d.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        int x, y;
+        String text;
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 110f));
+
+        text = "GAME OVER";
+        //Shadow
+        g2d.setColor(Color.BLACK);
+        x = getXForCenteredText(text);
+        y = gp.tileSize * 4;
+        g2d.drawString(text, x, y);
+        //Main
+        g2d.setColor(Color.WHITE);
+        x = getXForCenteredText(text) - 5;
+        y = gp.tileSize * 4 - 5;
+        g2d.drawString(text, x, y);
+
+        //Restart
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 40f));
+        text = "restart";
+        x = getXForCenteredText(text);
+        y += gp.tileSize * 4;
+        g2d.drawString(text, x, y);
+        if (commandNum == 1) {
+            g2d.drawString(">", x - 40, y);
+        }
+    }
 }

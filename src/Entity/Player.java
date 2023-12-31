@@ -167,6 +167,10 @@ public class Player extends Entity{
                 invincibleCounter = 0;
             }
         }
+
+        if (HP <= 0) {
+            gp.gameState = gp.gameOverState;
+        }
     }
 
     public void interactMonster(int i) {

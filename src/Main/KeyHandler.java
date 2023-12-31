@@ -23,6 +23,10 @@ public class KeyHandler  implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
 
+        if (gp.gameState == gp.playState) {
+            playState(code);
+        }
+
         if (code == KeyEvent.VK_W){
             upPressed = true;
         }
@@ -77,6 +81,37 @@ public class KeyHandler  implements KeyListener {
         }
         if (code == KeyEvent.VK_L){
             greatPressed = false;
+        }
+    }
+
+    public void playState(int code){
+        if (code == KeyEvent.VK_W){
+            upPressed = true;
+        }
+        if (code == KeyEvent.VK_S){
+            downPressed = true;
+        }
+        if (code == KeyEvent.VK_A){
+            leftPressed = true;
+        }
+        if (code == KeyEvent.VK_D){
+            rightPressed = true;
+        }
+        if (code == KeyEvent.VK_J){
+            attackPressed = true;
+        }
+        if (code == KeyEvent.VK_K){
+            shotKeyPressed = true;
+        }
+        if (code == KeyEvent.VK_L){
+            greatPressed = true;
+        }
+        if (code == KeyEvent.VK_P){
+            if(gp.gameState == gp.playState){
+                gp.gameState = gp.pauseState;
+            }else if(gp.gameState == gp.pauseState){
+                gp.gameState = gp.playState;
+            }
         }
     }
 }

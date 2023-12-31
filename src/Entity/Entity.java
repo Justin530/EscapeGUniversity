@@ -27,12 +27,14 @@ public class Entity {
     public boolean attacking = false;
     public boolean alive = true;
     public boolean dying = false;
+    public boolean hpBarOn = false;
 
     //counter
     public int actionLockCounter = 0;//lock the action for a certain time
 
     public int invincibleCounter = 0;
     public int dyingCounter = 0;
+    public int hpBarCounter = 0;
 
 
 
@@ -131,16 +133,35 @@ public class Entity {
                 case R -> (spriteNum == 1) ? right1 : (spriteNum == 2) ? right2 : null;
                 default -> null;
             };
+            //monster HP bar
+            if (type == 1 && hpBarOn) {
+                double oneScale = (double)gp.tileSize / maxHP;
+                double hpBarScale = oneScale * HP;
+
+                g2d.setColor(new Color(35, 35, 35));
+                g2d.fillRect(screenX - 1, screenY - 16, gp.tileSize + 2, 12);
+
+                g2d.setColor(new Color(255, 0, 50));
+                g2d.fillRect(screenX, screenY - 15, (int)hpBarScale, 10);
+
+                hpBarCounter ++;
+                if (hpBarCounter >= 600) {
+                    hpBarOn = false;
+                    hpBarCounter = 0;
+                }
+            }
 
             if (invincible) {
-                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+                hpBarOn = true;
+                hpBarCounter = 0;
+                changeAlpha(g2d, 0.5f);
             }
             if (dying) {
                 dyingAnimation(g2d);
             }
             g2d.drawImage(img, screenX, screenY, gp.tileSize, gp.tileSize, null);
             //reset alpha
-            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+            changeAlpha(g2d, 1.0f);
         }
     }
 

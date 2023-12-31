@@ -1,7 +1,12 @@
-package Entity;
+package Entity.Monsters;
 
+import Entity.*;
+import Main.GamePanel;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -18,26 +23,40 @@ import java.util.List;
 public class Monster extends Entity implements Runnable {
     private int HP;
     private int attack;
+    Player player;
 
-  public enum Status {
+    public enum Status {
         Chasing,Waiting,Attacking,OnAttack,Dead
     }
-    public Status monsterStatus = Status.Chasing;
-    public Monster(){
+    public Status monsterStatus = Status.Waiting;
+    public Monster(GamePanel gp) {
+        super(gp);
+        player = gp.player;
+        direction = Direction.D;
+        HP = 100;
+        //the hitBox is smaller than the actual image, x and y values are calculated from the image
+        hitBox = new Rectangle(worldLoc.getXPosition(), worldLoc.getYPosition(), gp.tileSize, gp.tileSize);
+        hitBox.x = 8;//start from the corner of the image
+        hitBox.y = 16;
+        hitBox.width = 32;
+        hitBox.height = 32;
+
+        speed = 1;
+
+        getMonsterImage();
     }
 
-    Player player = gamePanel.player;
+    public Monster(GamePanel gp,  int HP, int attack) {
+        super(gp);
 
-    public Monster(int HP, int attack) {
         this.HP = HP;
         this.attack = attack;
         this.monsterStatus = Status.Waiting;
-
     }
 
-    /**
-     * 此类储存寻路中下一步的信息
-     */
+      /**
+       * 此类储存寻路中下一步的信息
+       */
     public class NextStep {
         Direction direction;   //当前节点的方向（相对怪物）
         boolean notMeeting;//当notMeeting == False 时标志找到玩家
@@ -56,7 +75,7 @@ public class Monster extends Entity implements Runnable {
      * 根据怪物状态控制其行为的线程run()方法，但目前只实现了zombie的，ghost的需要重写
      */
     @Override
-    public void run() {                //每次循环先更新状态再行动
+    public void run() {   //每次循环先更新状态再行动
         while (true) {
             updateStatus();
             if (monsterStatus != Status.Dead) {
@@ -71,11 +90,11 @@ public class Monster extends Entity implements Runnable {
                         onAttack();//未实现
                     }
                     case Waiting: {
-                        patrol();
+                        //patrol();
                     }
                 }
             } else {
-                //处理死亡状态
+                  //处理死亡状态
                 break;
             }
         }
@@ -89,14 +108,14 @@ public class Monster extends Entity implements Runnable {
             this.monsterStatus = Status.Dead;
         else {
             int manhattan = Math.abs(this.worldLoc.getXPosition() - this.player.worldLoc.getXPosition()) + Math.abs(this.worldLoc.getYPosition() - this.player.worldLoc.getYPosition());
-            if (manhattan == 1)
+            if (manhattan == gp.tileSize)
                 this.monsterStatus = Status.Attacking;
-            else if (manhattan > 1 && manhattan <= 10)
+            else if (manhattan > gp.tileSize && manhattan <= gp.tileSize*10)
                 this.monsterStatus = Status.Chasing;
-            else if (manhattan > 10)
+            else if (manhattan > gp.tileSize*10)
                 this.monsterStatus = Status.Waiting;
             //OnAttack功能尚未实现
-        }
+          }
     }
 
     /**
@@ -110,17 +129,17 @@ public class Monster extends Entity implements Runnable {
             return new NextStep(nextDir, false);
         } else {
             int F, G, H;
-            int Min_F = Integer.MAX_VALUE; //将当前最小F设为无穷大（Integer最大值），方便比较
-            Direction bestDirection = null;//最优行动方向
+            int Min_F = 10000; //将当前最小F设为无穷大（Integer最大值），方便比较
+            Direction bestDirection = Direction.U;//最优行动方向
             List<Direction> validDirections = new ArrayList<>();
             //筛选可移动的有效方向
             for (Direction dir : Direction.values()) {
                 if (Location.canMove(this, dir))
-                    validDirections.add(dir);
+                validDirections.add(dir);
             }
             for (Direction validDirection : validDirections) {
                 G = validDirection.getDs();
-                H = NextStep.calculateManhattan(new Location(worldLoc.getXPosition() + validDirection.getDy(), worldLoc.getYPosition() + validDirection.getDy()), dest);
+                H = NextStep.calculateManhattan(new Location(this.worldLoc.getXPosition() + validDirection.getDx(), this.worldLoc.getYPosition() + validDirection.getDy()), dest);
                 F = G + H;
                 //计算F，取F最小的方向为最优
                 if (F < Min_F) {
@@ -152,6 +171,7 @@ public class Monster extends Entity implements Runnable {
         if (Location.canMove(this, randomDirection))
             Location.moveOneStep(this, randomDirection);
     }
+
     /**********************以下为暂时无法不全的方法*****************************************/
     /**
      * 作出攻击行为
@@ -167,21 +187,47 @@ public class Monster extends Entity implements Runnable {
 
     }
 
+    public void update() {
+        updateStatus();
+        if (monsterStatus != Status.Dead) {
+            switch (monsterStatus) {
+                case Chasing: {
+                    move(player.worldLoc);
+                }
+                case Attacking: {
+                    attack(player);
+                }
+                case OnAttack: {
+                    onAttack();//未实现
+                }
+                case Waiting: {
+                    patrol();
+                }
+            }
+        }
 
-    /**
-     * 绘图方法，暂时copy类Player的，未完成
-     *
-     * @param g2d
-     */
-    public void draw(Graphics2D g2d) {
-        BufferedImage img = switch (direction) {
-            case U -> (spriteNum == 1) ? up1 : (spriteNum == 2) ? up2 : null;
-            case D -> (spriteNum == 1) ? down1 : (spriteNum == 2) ? down2 : null;
-            case L -> (spriteNum == 1) ? left1 : (spriteNum == 2) ? left2 : null;
-            case R -> (spriteNum == 1) ? right1 : (spriteNum == 2) ? right2 : null;
-            default -> null;
-        };
+        System.out.println("monster update:  " + worldLoc.getXPosition() + "  " + worldLoc.getYPosition());
 
-        g2d.drawImage(img, worldLoc.getXPosition(), worldLoc.getYPosition(), gamePanel.tileSize, gamePanel.tileSize, null);
+        if (spriteCount == 10) {
+            spriteCount = 0;
+            spriteNum = (spriteNum == 1) ? 2 : 1;
+        } else {
+            spriteCount++;
+        }
+    }
+
+    public void getMonsterImage() {
+        try {
+            up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/monster/Monster_D.png")));
+            up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/monster/Monster_D.png")));
+            down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/monster/Monster_D.png")));
+            down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/monster/Monster_D.png")));
+            right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/monster/Monster_D.png")));
+            right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/monster/Monster_D.png")));
+            left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/monster/Monster_D.png")));
+            left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/monster/Monster_D.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

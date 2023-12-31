@@ -10,19 +10,15 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Player extends Entity{
-    GamePanel gp;
     KeyHandler keyH;
     public final Location screenLoc = new Location(0, 0);
-    private static final int BLOOD=1200;
-    private int HP;//血量
     private int sign_weapon;//等于0是剑，等于1是火球
     private int coldDown;//设定的冷却时间
     private int CD;//现在武器剩余的冷却时间
-    private static final int BLOOD_LENGTH=40;//血条原长度
     private int onAttackState;//受攻击的间隔
 
     public Player(GamePanel gp, KeyHandler keyH) {
-        this.gp = gp;
+        super(gp);
         this.keyH = keyH;
         setDefaultValues();
 
@@ -30,12 +26,16 @@ public class Player extends Entity{
         hitBox = new Rectangle(worldLoc.getXPosition(), worldLoc.getYPosition(), gp.tileSize, gp.tileSize);
         hitBox.x = 8;//start from the corner of the image
         hitBox.y = 16;
+        hitBoxDefaultX = hitBox.x;
+        hitBoxDefaultY = hitBox.y;
         hitBox.width = 32;
         hitBox.height = 32;
-        this.HP=BLOOD;
-        this.coldDown = 10;
+
+        attackBox.width = 36;
+        attackBox.height = 36;
 
         getPlayerImage();
+        getPlayerAttackImage();
     }
 
 
@@ -48,28 +48,42 @@ public class Player extends Entity{
 
         this.speed = 4;
         direction = Direction.D;
+
+        //player status
+        maxHP = 6;
+        HP = maxHP;
     }
 
     public void getPlayerImage() {
-        try {
-            up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_up_1.png")));
-            up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_up_2.png")));
-            down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_down_1.png")));
-            down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_down_2.png")));
-            right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_right_1.png")));
-            right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_right_2.png")));
-            left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_left_1.png")));
-            left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/player/boy_left_2.png")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        up1 = setup("/res/player/boy_up_1.png", gp.tileSize, gp.tileSize);
+        up2 = setup("/res/player/boy_up_2.png", gp.tileSize, gp.tileSize);
+        down1 = setup("/res/player/boy_down_1.png", gp.tileSize, gp.tileSize);
+        down2 = setup("/res/player/boy_down_2.png", gp.tileSize, gp.tileSize);
+        right1 = setup("/res/player/boy_right_1.png", gp.tileSize, gp.tileSize);
+        right2 = setup("/res/player/boy_right_2.png", gp.tileSize, gp.tileSize);
+        left1 = setup("/res/player/boy_left_1.png", gp.tileSize, gp.tileSize);
+        left2 = setup("/res/player/boy_left_2.png", gp.tileSize, gp.tileSize);
+    }
+
+    public void getPlayerAttackImage() {
+        attack_up1 = setup("/res/player/boy_attack_up_1.png", gp.tileSize, gp.tileSize * 2);
+        attack_up2 = setup("/res/player/boy_attack_up_2.png", gp.tileSize, gp.tileSize * 2);
+        attack_down1 = setup("/res/player/boy_attack_down_1.png", gp.tileSize, gp.tileSize * 2);
+        attack_down2 = setup("/res/player/boy_attack_down_2.png", gp.tileSize, gp.tileSize * 2);
+        attack_left1 = setup("/res/player/boy_attack_left_1.png", gp.tileSize * 2, gp.tileSize);
+        attack_left2 = setup("/res/player/boy_attack_left_2.png", gp.tileSize * 2, gp.tileSize);
+        attack_right1 = setup("/res/player/boy_attack_right_1.png", gp.tileSize * 2, gp.tileSize);
+        attack_right2 = setup("/res/player/boy_attack_right_2.png", gp.tileSize * 2, gp.tileSize);
     }
 
     /**
      * 处理键盘的输入
      */
     public void update(){
-        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+        if (attacking) {
+            attack();
+        }
+        else if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.attackPressed) {
             if(keyH.upPressed){
                 direction = Direction.U;
             }
@@ -94,8 +108,8 @@ public class Player extends Entity{
             if(keyH.rightPressed && keyH.downPressed){
                 direction = Direction.RD;
             }
-            if (keyH.attackPressed && this.getCD() == 0) {
-                this.setCD();
+            if (keyH.attackPressed) {
+                attacking = true;
             } else if (keyH.changeWeaponPressed) {
                 sign_weapon=(sign_weapon+1)%2;
             } else if(keyH.greatPressed && this.getCD() == 0){
@@ -103,9 +117,14 @@ public class Player extends Entity{
                     //Fireball.greatPower();
                     this.setCD();}
             }
+
             //check tile collision
             collisionOn = false;
-            //gp.collisionDetector.checkTile(this);
+            gp.collisionDetector.checkTile(this);
+
+            //check monster collision
+            int monsterIndex = gp.collisionDetector.checkEntity(this, gp.monsters);
+            interactMonster(monsterIndex);
 
             //if collision is detected, player cannot move
             if (!collisionOn) {
@@ -140,6 +159,35 @@ public class Player extends Entity{
                 spriteCount++;
             }
         }
+
+        if (invincible) {
+            invincibleCounter ++;
+            if (invincibleCounter >= 60) {
+                invincible = false;
+                invincibleCounter = 0;
+            }
+        }
+    }
+
+    public void interactMonster(int i) {
+        if (i != 999) {
+            if (!invincible) {
+                HP --;
+                invincible = true;
+            }
+        }
+    }
+
+    public void damageMonster(int i) {
+        if (i != 999) {
+            if (!gp.monsters[i].invincible) {
+                gp.monsters[i].HP --;
+                gp.monsters[i].invincible = true;
+                if (gp.monsters[i].HP <= 0) {
+                    gp.monsters[i].dying = true;
+                }
+            }
+        }
     }
 
     /**
@@ -147,15 +195,49 @@ public class Player extends Entity{
      * @param g2d
      */
     public void draw(Graphics2D g2d) {
-        BufferedImage img = switch (direction) {
-            case LU, U, RU -> (spriteNum == 1) ? up1 : (spriteNum == 2) ? up2 : null;
-            case LD, D, RD -> (spriteNum == 1) ? down1 : (spriteNum == 2) ? down2 : null;
-            case L -> (spriteNum == 1) ? left1 : (spriteNum == 2) ? left2 : null;
-            case R -> (spriteNum == 1) ? right1 : (spriteNum == 2) ? right2 : null;
-            default -> null;
+        int x = screenLoc.getXPosition(), y = screenLoc.getYPosition();
+        BufferedImage img = null;
+        switch (direction) {
+            case LU, U, RU -> {
+                if (attacking) {
+                    y -= gp.tileSize;
+                    if (spriteNum == 1) img = attack_up1;
+                    else if (spriteNum == 2) img = attack_up2;
+                } else {
+                    if (spriteNum == 1) img = up1;
+                    else if (spriteNum == 2) img = up2;
+                }
+            }
+            case LD, D, RD -> {
+                if (attacking) {
+                    if (spriteNum == 1) img = attack_down1;
+                    else if (spriteNum == 2) img = attack_down2;
+                } else {
+                    if (spriteNum == 1) img = down1;
+                    else if (spriteNum == 2) img = down2;
+                }
+            }
+            case L -> {
+                if (attacking) {
+                    x -= gp.tileSize;
+                    if (spriteNum == 1) img = attack_left1;
+                    else if (spriteNum == 2) img = attack_left2;
+                } else {
+                    if (spriteNum == 1) img = left1;
+                    else if (spriteNum == 2) img = left2;
+                }
+            }
+            case R -> {
+                if (attacking) {
+                    if (spriteNum == 1) img = attack_right1;
+                    else if (spriteNum == 2) img = attack_right2;
+                } else {
+                    if (spriteNum == 1) img = right1;
+                    else if (spriteNum == 2) img = right2;
+                }
+            }
         };
 
-        int x = screenLoc.getXPosition(), y = screenLoc.getYPosition();
         if (screenLoc.getXPosition() > worldLoc.getXPosition()) {
             x = worldLoc.getXPosition();
         }
@@ -169,25 +251,63 @@ public class Player extends Entity{
             y = gp.screenHeight - gp.worldHeight + worldLoc.getYPosition();
         }
 
-        g2d.drawImage(img, x, y, gp.tileSize, gp.tileSize, null);
-        //武器名
-        if (sign_weapon == 0) {
-            g2d.drawString("sword", screenLoc.getXPosition() - 20, screenLoc.getYPosition() - 45);
-        } else {
-            g2d.drawString("fireBoll", screenLoc.getXPosition() - 20, screenLoc.getYPosition() - 45);
+        if (invincible) {
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
         }
 
+        g2d.drawImage(img, x, y,null);
+        //reset alpha
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
     }
 
     /**
      * 攻击的模块
      */
     public void attack(){
-        if(getHP() <= 0 ) return;
-        this.onAttackState = 5;
-        if(getHP() <= 0) {
-            this.setHP(0);
-            return;
+        spriteCount++;
+
+        if (spriteCount <= 5) {
+            spriteNum = 1;
+        }
+        else if (spriteCount <= 25) {
+            spriteNum = 2;
+            //save the current location and hitBox of the player
+            int currentWorldX = worldLoc.getXPosition();
+            int currentWorldY = worldLoc.getYPosition();
+            int hitBoxWidth = hitBox.width;
+            int hitBoxHeight = hitBox.height;
+            //change the location and hitBox of the player
+            switch (direction) {
+                case U -> {
+                    worldLoc.setYPosition(worldLoc.getYPosition() - attackBox.height);
+                }
+                case D -> {
+                    worldLoc.setYPosition(worldLoc.getYPosition() + attackBox.height);
+                }
+                case L -> {
+                    worldLoc.setXPosition(worldLoc.getXPosition() - attackBox.width);
+                }
+                case R -> {
+                    worldLoc.setXPosition(worldLoc.getXPosition() + attackBox.width);
+                }
+            }
+            //attackBox becomes the hitBox
+            hitBox.width = attackBox.width;
+            hitBox.height = attackBox.height;
+            //check monster collision with updated hitBox and worldLoc
+            int monsterIndex = gp.collisionDetector.checkEntity(this, gp.monsters);
+            damageMonster(monsterIndex);
+
+            //change the location and hitBox back
+            worldLoc.setXPosition(currentWorldX);
+            worldLoc.setYPosition(currentWorldY);
+            hitBox.width = hitBoxWidth;
+            hitBox.height = hitBoxHeight;
+        }
+        else {
+            spriteNum = 1;
+            spriteCount = 0;
+            attacking = false;
         }
     }
 

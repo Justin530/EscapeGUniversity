@@ -1,6 +1,7 @@
 package Main;
 
 import Entity.*;
+import Object.*;
 import Main.Tile.TileManager;
 
 import javax.swing.*;
@@ -37,11 +38,11 @@ public class GamePanel extends JPanel implements Runnable{
     //entities and objects
     public Player player = new Player(this, keyHandler);
     public Entity[] monsters = new Entity[50];
+    public SuperObject[] objects = new SuperObject[50];
     ArrayList<Entity> entityList = new ArrayList<Entity>();
 
     //game states
     public int gameState;
-    public final int titleState = 0;
     public final int playState = 1;
     public final int pauseState = 2;
 
@@ -57,7 +58,7 @@ public class GamePanel extends JPanel implements Runnable{
      * set up the objects, npc, etc.
      */
     public void setupGame() {
-        //assetSetter.setMonsters();
+        assetSetter.setMonsters();
 
         gameState = playState;
     }
@@ -118,7 +119,7 @@ public class GamePanel extends JPanel implements Runnable{
             }
 
             if (timer >= 1000000000) {
-                System.out.println("FPS: " + drawCount);
+//                System.out.println("FPS: " + drawCount);
                 drawCount = 0;
                 timer = 0;
             }
@@ -129,6 +130,21 @@ public class GamePanel extends JPanel implements Runnable{
         if (gameState == playState) {
             //Update the player
             player.update();
+
+            //Update the monsters
+            for (int i = 0; i < monsters.length; i++) {
+                if (monsters[i] != null) {
+                    if (monsters[i].alive && !monsters[i].dying) {
+                        monsters[i].update();
+                    }
+                    if (!monsters[i].alive) {
+                        monsters[i] = null;
+                    }
+                }
+            }
+
+
+
         } else {
             //todo
         }
@@ -142,15 +158,16 @@ public class GamePanel extends JPanel implements Runnable{
         //Draw the world
         tileManager.draw(g2d);
 
-        //Draw the title screen
-        if (gameState == titleState) {
-
-        } else {
-            //todo
-        }
-
         //Draw the player
         player.draw(g2d);
+
+        //Draw the monsters
+        for (int i = 0; i < monsters.length; i++) {
+            if (monsters[i] != null) {
+                monsters[i].draw(g2d);
+            }
+        }
+
 
         //UI
         ui.draw(g2d);

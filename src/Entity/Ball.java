@@ -1,5 +1,7 @@
 package Entity;
 
+import Main.GamePanel;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -17,7 +19,8 @@ public class Ball extends Entity implements Runnable{
     boolean isLive = true;  //子弹是否还存活，以判断是否还继续绘制子弹
     private Image img;
 
-    public Ball(Location loc, int speed, int coldDownTime, int damage, Direction dir) {
+    public Ball(GamePanel gp, Location loc, int speed, int coldDownTime, int damage, Direction dir) {
+        super(gp);
         this.x = loc.getXPosition();
         this.y = loc.getYPosition();
         this.loc = loc;
@@ -92,7 +95,7 @@ public class Ball extends Entity implements Runnable{
 
     public void draw(Graphics2D g2d){
         Image img = getImage("rock_down_1.png");
-        g2d.drawImage(img, loc.getXPosition(), loc.getYPosition(), gamePanel.tileSize, gamePanel.tileSize, null);
+        g2d.drawImage(img, loc.getXPosition(), loc.getYPosition(), gp.tileSize, gp.tileSize, null);
     }
 
     public int getX() {

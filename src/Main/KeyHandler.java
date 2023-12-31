@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler  implements KeyListener {
     public boolean upPressed, downPressed, leftPressed, rightPressed,
-            attackPressed,changeWeaponPressed,greatPressed;
+            attackPressed, changeWeaponPressed, greatPressed;
 
 
 

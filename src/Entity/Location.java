@@ -35,7 +35,7 @@ public class Location {
       entity.collisionOn = false;
       Direction tmp = entity.direction;
       entity.direction = direction;
-      entity.gamePanel.collisionDetector.checkTile(entity);
+      entity.gp.collisionDetector.checkTile(entity);
       entity.direction = tmp;
       return entity.collisionOn;
     }

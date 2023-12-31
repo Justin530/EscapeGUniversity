@@ -106,4 +106,98 @@ public class CollisionDetector {
             }
         }
     }
+
+    public int checkEntity(Entity entity, Entity[] target) {
+        int idx = 999;
+        //record the position of the entity's hitBox
+        for (int i = 0; i < target.length; i ++) {
+            if (target[i] != null) {
+                //get entity's hitBox
+                entity.hitBox.x = entity.worldLoc.getXPosition() + entity.hitBox.x;
+                entity.hitBox.y = entity.worldLoc.getYPosition() + entity.hitBox.y;
+                //get target's hitBox
+                target[i].hitBox.x = target[i].worldLoc.getXPosition() + target[i].hitBox.x;
+                target[i].hitBox.y = target[i].worldLoc.getYPosition() + target[i].hitBox.y;
+
+                switch (entity.direction) {
+                    case U -> entity.hitBox.y -= entity.speed;
+                    case D -> entity.hitBox.y += entity.speed;
+                    case L -> entity.hitBox.x -= entity.speed;
+                    case R -> entity.hitBox.x += entity.speed;
+                    case RU -> {
+                        entity.hitBox.x += entity.speed;
+                        entity.hitBox.y -= entity.speed;
+                    }
+                    case RD -> {
+                        entity.hitBox.x += entity.speed;
+                        entity.hitBox.y += entity.speed;
+                    }
+                    case LD -> {
+                        entity.hitBox.x -= entity.speed;
+                        entity.hitBox.y += entity.speed;
+                    }
+                    case LU -> {
+                        entity.hitBox.x -= entity.speed;
+                        entity.hitBox.y -= entity.speed;
+                    }
+                }
+                if (entity.hitBox.intersects(target[i].hitBox) && target[i] != entity) {
+                    entity.collisionOn = true;
+                    idx = i;
+                }
+
+                entity.hitBox.x = entity.hitBoxDefaultX;
+                entity.hitBox.y = entity.hitBoxDefaultY;
+                target[i].hitBox.x = target[i].hitBoxDefaultX;
+                target[i].hitBox.y = target[i].hitBoxDefaultY;
+            }
+        }
+
+        return idx;
+    }
+
+    public boolean checkPlayer(Entity entity) {
+        boolean contactPlayer = false;
+        //get entity's hitBox
+        entity.hitBox.x = entity.worldLoc.getXPosition() + entity.hitBox.x;
+        entity.hitBox.y = entity.worldLoc.getYPosition() + entity.hitBox.y;
+        //get target's hitBox
+        gp.player.hitBox.x = gp.player.worldLoc.getXPosition() + gp.player.hitBox.x;
+        gp.player.hitBox.y = gp.player.worldLoc.getYPosition() + gp.player.hitBox.y;
+
+        switch (entity.direction) {
+            case U -> entity.hitBox.y -= entity.speed;
+            case D -> entity.hitBox.y += entity.speed;
+            case L -> entity.hitBox.x -= entity.speed;
+            case R -> entity.hitBox.x += entity.speed;
+            case RU -> {
+                entity.hitBox.x += entity.speed;
+                entity.hitBox.y -= entity.speed;
+            }
+            case RD -> {
+                entity.hitBox.x += entity.speed;
+                entity.hitBox.y += entity.speed;
+            }
+            case LD -> {
+                entity.hitBox.x -= entity.speed;
+                entity.hitBox.y += entity.speed;
+            }
+            case LU -> {
+                entity.hitBox.x -= entity.speed;
+                entity.hitBox.y -= entity.speed;
+            }
+        }
+        if (entity.hitBox.intersects(gp.player.hitBox)) {
+            entity.collisionOn = true;
+            contactPlayer = true;
+        }
+
+
+        entity.hitBox.x = entity.hitBoxDefaultX;
+        entity.hitBox.y = entity.hitBoxDefaultY;
+        gp.player.hitBox.x = gp.player.hitBoxDefaultX;
+        gp.player.hitBox.y = gp.player.hitBoxDefaultY;
+
+        return contactPlayer;
+    }
 }

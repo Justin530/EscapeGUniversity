@@ -47,11 +47,13 @@ public class Player extends Entity{
         this.screenLoc.setYPosition(gp.screenHeight / 2 - gp.tileSize / 2);
 
         this.speed = 4;
+        this.attack = 2;
         direction = Direction.D;
 
         //player status
         maxHP = 6;
         HP = maxHP;
+        flyingObject = new FireBall(gp);
     }
 
     public void getPlayerImage() {
@@ -110,12 +112,6 @@ public class Player extends Entity{
             }
             if (keyH.attackPressed) {
                 attacking = true;
-            } else if (keyH.changeWeaponPressed) {
-                sign_weapon=(sign_weapon+1)%2;
-            } else if(keyH.greatPressed && this.getCD() == 0){
-                if(sign_weapon==1) {
-                    //Fireball.greatPower();
-                    this.setCD();}
             }
 
             //check tile collision
@@ -159,6 +155,10 @@ public class Player extends Entity{
                 spriteCount++;
             }
         }
+        if (keyH.shotKeyPressed && !flyingObject.alive) {
+            flyingObject.set(worldLoc.getXPosition(), worldLoc.getYPosition(), direction, true, this);
+            gp.flyingObjectList.add(flyingObject);
+        }
 
         if (invincible) {
             invincibleCounter ++;
@@ -171,22 +171,72 @@ public class Player extends Entity{
 
     public void interactMonster(int i) {
         if (i != 999) {
-            if (!invincible) {
+            if (!invincible && !gp.monsters[i].dying) {
                 HP --;
                 invincible = true;
             }
         }
     }
 
-    public void damageMonster(int i) {
+    public void damageMonster(int i, int attack) {
         if (i != 999) {
             if (!gp.monsters[i].invincible) {
-                gp.monsters[i].HP --;
+                gp.monsters[i].HP -= attack;
+
                 gp.monsters[i].invincible = true;
+                gp.monsters[i].damageReaction();
+
                 if (gp.monsters[i].HP <= 0) {
                     gp.monsters[i].dying = true;
                 }
             }
+        }
+    }
+    public void attack(){
+        spriteCount++;
+
+        if (spriteCount <= 5) {
+            spriteNum = 1;
+        }
+        else if (spriteCount <= 25) {
+            spriteNum = 2;
+            //save the current location and hitBox of the player
+            int currentWorldX = worldLoc.getXPosition();
+            int currentWorldY = worldLoc.getYPosition();
+            int hitBoxWidth = hitBox.width;
+            int hitBoxHeight = hitBox.height;
+            //change the location and hitBox of the player
+            switch (direction) {
+                case U -> {
+                    worldLoc.setYPosition(worldLoc.getYPosition() - attackBox.height);
+                }
+                case D -> {
+                    worldLoc.setYPosition(worldLoc.getYPosition() + attackBox.height);
+                }
+                case L -> {
+                    worldLoc.setXPosition(worldLoc.getXPosition() - attackBox.width);
+                }
+                case R -> {
+                    worldLoc.setXPosition(worldLoc.getXPosition() + attackBox.width);
+                }
+            }
+            //attackBox becomes the hitBox
+            hitBox.width = attackBox.width;
+            hitBox.height = attackBox.height;
+            //check monster collision with updated hitBox and worldLoc
+            int monsterIndex = gp.collisionDetector.checkEntity(this, gp.monsters);
+            damageMonster(monsterIndex, attack);
+
+            //change the location and hitBox back
+            worldLoc.setXPosition(currentWorldX);
+            worldLoc.setYPosition(currentWorldY);
+            hitBox.width = hitBoxWidth;
+            hitBox.height = hitBoxHeight;
+        }
+        else {
+            spriteNum = 1;
+            spriteCount = 0;
+            attacking = false;
         }
     }
 
@@ -259,80 +309,5 @@ public class Player extends Entity{
         //reset alpha
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
     }
-
-    /**
-     * 攻击的模块
-     */
-    public void attack(){
-        spriteCount++;
-
-        if (spriteCount <= 5) {
-            spriteNum = 1;
-        }
-        else if (spriteCount <= 25) {
-            spriteNum = 2;
-            //save the current location and hitBox of the player
-            int currentWorldX = worldLoc.getXPosition();
-            int currentWorldY = worldLoc.getYPosition();
-            int hitBoxWidth = hitBox.width;
-            int hitBoxHeight = hitBox.height;
-            //change the location and hitBox of the player
-            switch (direction) {
-                case U -> {
-                    worldLoc.setYPosition(worldLoc.getYPosition() - attackBox.height);
-                }
-                case D -> {
-                    worldLoc.setYPosition(worldLoc.getYPosition() + attackBox.height);
-                }
-                case L -> {
-                    worldLoc.setXPosition(worldLoc.getXPosition() - attackBox.width);
-                }
-                case R -> {
-                    worldLoc.setXPosition(worldLoc.getXPosition() + attackBox.width);
-                }
-            }
-            //attackBox becomes the hitBox
-            hitBox.width = attackBox.width;
-            hitBox.height = attackBox.height;
-            //check monster collision with updated hitBox and worldLoc
-            int monsterIndex = gp.collisionDetector.checkEntity(this, gp.monsters);
-            damageMonster(monsterIndex);
-
-            //change the location and hitBox back
-            worldLoc.setXPosition(currentWorldX);
-            worldLoc.setYPosition(currentWorldY);
-            hitBox.width = hitBoxWidth;
-            hitBox.height = hitBoxHeight;
-        }
-        else {
-            spriteNum = 1;
-            spriteCount = 0;
-            attacking = false;
-        }
-    }
-
-    /**
-     * @return CD
-     * 返回现在的冷却时间
-     */
-    public int getCD() {
-        return this.CD;
-    }
-
-    /**
-     * 进入CD
-     */
-    public void setCD() {CD = coldDown;}
-
-    public int getHP() {return HP;}
-
-    public void setHP(int HP) {this.HP = HP;}
-
-    public int getSign_weapon() {return sign_weapon;}
-
-    public int getColdDown() {return coldDown;}
-
-    public int getOnAttackState() {return onAttackState;}
-
 }
 

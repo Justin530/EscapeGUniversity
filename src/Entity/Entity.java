@@ -42,6 +42,8 @@ public class Entity {
     public int maxHP;
     public int HP;
     public int speed;
+    public int attack;
+    public FlyingObject flyingObject = null;
 
 
     public Entity(GamePanel gp) {
@@ -51,6 +53,7 @@ public class Entity {
     }
 
     public void setAction() {}
+    public void damageReaction() {}
     public void update() {
         setAction();
 

@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler  implements KeyListener {
     public boolean upPressed, downPressed, leftPressed, rightPressed,
-            attackPressed, changeWeaponPressed, greatPressed;
+            attackPressed, shotKeyPressed, greatPressed;
 
 
 
@@ -39,7 +39,7 @@ public class KeyHandler  implements KeyListener {
             attackPressed = true;
         }
         if (code == KeyEvent.VK_K){
-            changeWeaponPressed = true;
+            shotKeyPressed = true;
         }
         if (code == KeyEvent.VK_L){
             greatPressed = true;
@@ -73,7 +73,7 @@ public class KeyHandler  implements KeyListener {
             attackPressed = false;
         }
         if (code == KeyEvent.VK_K){
-            changeWeaponPressed = false;
+            shotKeyPressed = false;
         }
         if (code == KeyEvent.VK_L){
             greatPressed = false;

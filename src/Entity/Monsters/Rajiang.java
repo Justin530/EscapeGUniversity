@@ -11,7 +11,8 @@ public class Rajiang extends Entity{
         super(gp);
         type = 1;
         name = "Rajiang";
-        HP = 4;
+        maxHP = 8;
+        HP = maxHP;
 
         hitBox.x = 8;//start from the corner of the image
         hitBox.y = 16;
@@ -55,5 +56,11 @@ public class Rajiang extends Entity{
                 direction = Direction.D;
             }
         }
+    }
+
+    public void damageReaction() {
+        actionLockCounter = 0;
+        direction = gp.player.direction;
+
     }
 }

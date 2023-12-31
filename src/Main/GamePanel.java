@@ -40,6 +40,7 @@ public class GamePanel extends JPanel implements Runnable{
     public Entity[] monsters = new Entity[50];
     public SuperObject[] objects = new SuperObject[50];
     ArrayList<Entity> entityList = new ArrayList<Entity>();
+    public ArrayList<Entity> flyingObjectList = new ArrayList<Entity>();
 
     //game states
     public int gameState;
@@ -143,6 +144,16 @@ public class GamePanel extends JPanel implements Runnable{
                 }
             }
 
+            for (int i = 0; i < flyingObjectList.size(); i++) {
+                if (flyingObjectList.get(i) != null) {
+                    if (flyingObjectList.get(i).alive) {
+                        flyingObjectList.get(i).update();
+                    }
+                    if (!flyingObjectList.get(i).alive) {
+                        flyingObjectList.remove(i);
+                    }
+                }
+            }
 
 
         } else {
@@ -165,6 +176,12 @@ public class GamePanel extends JPanel implements Runnable{
         for (int i = 0; i < monsters.length; i++) {
             if (monsters[i] != null) {
                 monsters[i].draw(g2d);
+            }
+        }
+
+        for (int i = 0; i < flyingObjectList.size(); i++) {
+            if (flyingObjectList.get(i) != null) {
+                flyingObjectList.get(i).draw(g2d);
             }
         }
 

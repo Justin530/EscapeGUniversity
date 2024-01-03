@@ -16,8 +16,8 @@ public class AssetSetter {
     }
 
     public void setMonsters() {
-        gp.monsters[0] = new Rajiang(gp);
+        gp.monsters[0] = new Monster(gp);
         gp.monsters[0].worldLoc.setXPosition(gp.tileSize * 23);
-        gp.monsters[0].worldLoc.setYPosition(gp.tileSize * 36);
+        gp.monsters[0].worldLoc.setYPosition(gp.tileSize * 26);
     }
 }

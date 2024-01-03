@@ -1,5 +1,6 @@
 package Entity;
 
+import Entity.FlyingObject.FlyingObject;
 import Main.GamePanel;
 import Main.UtilityTool;
 
@@ -65,10 +66,7 @@ public class Entity {
         gp.collisionDetector.checkEntity(this, gp.monsters);
 
         if (type == 1 && contactPlayer) {
-            if (!gp.player.invincible) {
-                gp.player.HP --;
-                gp.player.invincible = true;
-            }
+            damagePlayer(attack);
         }
 
         //if collision is detected, player cannot move
@@ -110,6 +108,13 @@ public class Entity {
                 invincible = false;
                 invincibleCounter = 0;
             }
+        }
+    }
+
+    public void damagePlayer(int attack) {
+        if (!gp.player.invincible) {
+            gp.player.HP -= attack;
+            gp.player.invincible = true;
         }
     }
 

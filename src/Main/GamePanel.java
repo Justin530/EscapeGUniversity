@@ -29,6 +29,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     //Controllers of the game
     KeyHandler keyHandler = new KeyHandler(this);
+    Sound sound = new Sound();
     TileManager tileManager = new TileManager(this);
     public CollisionDetector collisionDetector = new CollisionDetector(this);
     public AssetSetter assetSetter = new AssetSetter(this);
@@ -62,6 +63,7 @@ public class GamePanel extends JPanel implements Runnable{
     public void setupGame() {
         assetSetter.setMonsters();
 
+        playMusic(0);
         gameState = playState;
     }
 
@@ -191,5 +193,20 @@ public class GamePanel extends JPanel implements Runnable{
         ui.draw(g2d);
 
         g2d.dispose();
+    }
+
+    public void playMusic(int i) {
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+
+    public void stopMusic() {
+        sound.stop();
+    }
+
+    public void playSE(int i) {
+        sound.setFile(i);
+        sound.play();
     }
 }

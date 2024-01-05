@@ -36,9 +36,7 @@ public class Main {
         jPanel.setLayout(null);
         jPanel.setBounds(0,0,768,576);
         imagePanel.add(jPanel);
-
          */
-
 
         JButton jButton=new JButton();
         jButton.setText("进入G大");

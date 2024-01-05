@@ -96,8 +96,8 @@ public class TileManager {
                 String line = br.readLine();
                 String[] tokens = line.split(" ");
 
-                for (int i = 0; i < tokens.length; i++) {
-                    mapTileNum[col][row] = Integer.parseInt(tokens[i]);
+                for (String token : tokens) {
+                    mapTileNum[col][row] = Integer.parseInt(token);
                     col++;
                 }
 

@@ -153,9 +153,12 @@ public class Player extends Entity{
                 spriteCount++;
             }
         }
-        if (keyH.shotKeyPressed && !flyingObject.alive) {
+        if (keyH.shotKeyPressed && !flyingObject.alive && shotAvailableCounter == 30) {
+            //set default coordinates, direction and user
             flyingObject.set(worldLoc.getXPosition(), worldLoc.getYPosition(), direction, true, this);
+            //add it to the list
             gp.flyingObjectList.add(flyingObject);
+            shotAvailableCounter = 0;
         }
 
         if (invincible) {
@@ -164,6 +167,10 @@ public class Player extends Entity{
                 invincible = false;
                 invincibleCounter = 0;
             }
+        }
+
+        if (shotAvailableCounter < 30) {
+            shotAvailableCounter ++;
         }
 
         if (HP <= 0) {
@@ -184,12 +191,14 @@ public class Player extends Entity{
         if (i != 999) {
             if (!gp.monsters[i].invincible) {
                 gp.monsters[i].HP -= attack;
+                gp.ui.addMessage("-" + attack);
 
                 gp.monsters[i].invincible = true;
                 gp.monsters[i].damageReaction();
 
                 if (gp.monsters[i].HP <= 0) {
                     gp.monsters[i].dying = true;
+                    gp.ui.addMessage("killed the " + gp.monsters[i].name);
                 }
             }
         }
@@ -228,6 +237,9 @@ public class Player extends Entity{
             //check monster collision with updated hitBox and worldLoc
             int monsterIndex = gp.collisionDetector.checkEntity(this, gp.monsters);
             damageMonster(monsterIndex, attack);
+            if (monsterIndex == 999 && spriteCount == 25) {
+                gp.ui.addMessage("Miss!");
+            }
 
             //change the location and hitBox back
             worldLoc.setXPosition(currentWorldX);

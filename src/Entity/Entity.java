@@ -21,7 +21,6 @@ public class Entity {
     //state
     public Location worldLoc = new Location(0, 0);
     public Direction direction;
-    public int spriteCount = 0;//count for sprite animation
     public int spriteNum = 1;//sprite number, decide which sprite to draw(1 or 2)
     public boolean collisionOn = false;
     public boolean invincible = false;
@@ -29,13 +28,15 @@ public class Entity {
     public boolean alive = true;
     public boolean dying = false;
     public boolean hpBarOn = false;
+    public boolean onPath = false;
 
     //counter
     public int actionLockCounter = 0;//lock the action for a certain time
-
+    public int spriteCount = 0;//count for sprite animation
     public int invincibleCounter = 0;
     public int dyingCounter = 0;
     public int hpBarCounter = 0;
+    public int shotAvailableCounter = 0;
 
 
 
@@ -57,17 +58,20 @@ public class Entity {
 
     public void setAction() {}
     public void damageReaction() {}
-    public void update() {
-        setAction();
-
+    public void checkCollision() {
         collisionOn = false;
         gp.collisionDetector.checkTile(this);
-        boolean contactPlayer = gp.collisionDetector.checkPlayer(this);
         gp.collisionDetector.checkEntity(this, gp.monsters);
+        boolean contactPlayer = gp.collisionDetector.checkPlayer(this);
 
         if (type == 1 && contactPlayer) {
             damagePlayer(attack);
         }
+    }
+    public void update() {
+        setAction();
+
+        checkCollision();
 
         //if collision is detected, player cannot move
         if (!collisionOn) {
@@ -211,5 +215,69 @@ public class Entity {
         }
 
         return image;
+    }
+
+    public void searchPath(int goalCol, int goalRow) {
+        int startCol = (worldLoc.getXPosition() + hitBox.x) / gp.tileSize;
+        int startRow = (worldLoc.getYPosition() + hitBox.y) / gp.tileSize;
+
+        gp.pathFinder.setNodes(startCol, startRow, goalCol, goalRow);
+
+        if (gp.pathFinder.search()) {
+            //next worldX and worldY
+            int nextX = gp.pathFinder.pathList.get(0).col * gp.tileSize;
+            int nextY = gp.pathFinder.pathList.get(0).row * gp.tileSize;
+
+            //entity's hitBox position
+            int entityLeftX = worldLoc.getXPosition() + hitBox.x;
+            int entityRightX = worldLoc.getXPosition() + hitBox.x + hitBox.width;
+            int entityTopY = worldLoc.getYPosition() + hitBox.y;
+            int entityBottomY = worldLoc.getYPosition() + hitBox.y + hitBox.height;
+
+            if (entityTopY > nextY && entityLeftX >= nextX && entityRightX < nextX + gp.tileSize) {
+                direction = Direction.U;
+            } else if (entityBottomY < nextY + gp.tileSize && entityLeftX >= nextX && entityRightX < nextX + gp.tileSize) {
+                direction = Direction.D;
+            } else if (entityLeftX > nextX && entityTopY >= nextY && entityBottomY < nextY + gp.tileSize) {
+                direction = Direction.L;
+            } else if (entityRightX < nextX + gp.tileSize && entityTopY >= nextY && entityBottomY < nextY + gp.tileSize) {
+                direction = Direction.R;
+            } else if (entityLeftX > nextX && entityTopY > nextY) {
+                //up or left
+                direction = Direction.U;
+                checkCollision();
+                if (collisionOn) {
+                    direction = Direction.L;
+                }
+            } else if (entityRightX < nextX + gp.tileSize && entityTopY > nextY) {
+                //up or right
+                direction = Direction.U;
+                checkCollision();
+                if (collisionOn) {
+                    direction = Direction.R;
+                }
+            } else if (entityLeftX > nextX && entityBottomY < nextY + gp.tileSize) {
+                //down or left
+                direction = Direction.D;
+                checkCollision();
+                if (collisionOn) {
+                    direction = Direction.L;
+                }
+            } else if (entityRightX < nextX + gp.tileSize && entityBottomY < nextY + gp.tileSize) {
+                //down or right
+                direction = Direction.D;
+                checkCollision();
+                if (collisionOn) {
+                    direction = Direction.R;
+                }
+            }
+
+            //if reach the goal, stop searching
+//            int nextCol = gp.pathFinder.pathList.get(0).col;
+//            int nextRow = gp.pathFinder.pathList.get(0).row;
+//            if (nextCol == goalCol && nextRow == goalRow) {
+//                onPath = false;
+//            }
+        }
     }
 }

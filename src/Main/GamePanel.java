@@ -1,6 +1,8 @@
 package Main;
 
+import AI.PathFinder;
 import Entity.*;
+import Main.UI.UI;
 import Object.*;
 import Main.Tile.TileManager;
 
@@ -30,10 +32,11 @@ public class GamePanel extends JPanel implements Runnable{
     //Controllers of the game
     KeyHandler keyHandler = new KeyHandler(this);
     Sound sound = new Sound();
-    TileManager tileManager = new TileManager(this);
+    public TileManager tileManager = new TileManager(this);
     public CollisionDetector collisionDetector = new CollisionDetector(this);
     public AssetSetter assetSetter = new AssetSetter(this);
     public UI ui = new UI(this);
+    public PathFinder pathFinder = new PathFinder(this);
     Thread gameThread;
 
     //entities and objects
@@ -205,6 +208,9 @@ public class GamePanel extends JPanel implements Runnable{
         sound.stop();
     }
 
+    /**
+     * about sound effect
+     */
     public void playSE(int i) {
         sound.setFile(i);
         sound.play();

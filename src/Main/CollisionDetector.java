@@ -26,32 +26,32 @@ public class CollisionDetector {
         switch (entity.direction) {
             case U -> {
                 entityUpRow = (entityUpY - entity.speed) / gp.tileSize;
-                tileNum1 = gp.tileManager.mapTileNum[entityLeftCol][entityUpRow];
-                tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityUpRow];
+                tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityUpRow];
+                tileNum2 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityUpRow];
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
             }
             case D -> {
                 entityDownRow = (entityDownY + entity.speed) / gp.tileSize;
-                tileNum1 = gp.tileManager.mapTileNum[entityLeftCol][entityDownRow];
-                tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityDownRow];
+                tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityDownRow];
+                tileNum2 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityDownRow];
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
             }
             case L -> {
                 entityLeftCol = (entityLeftX - entity.speed) / gp.tileSize;
-                tileNum1 = gp.tileManager.mapTileNum[entityLeftCol][entityUpRow];
-                tileNum2 = gp.tileManager.mapTileNum[entityLeftCol][entityDownRow];
+                tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityUpRow];
+                tileNum2 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityDownRow];
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
             }
             case R -> {
                 entityRightCol = (entityRightX + entity.speed) / gp.tileSize;
-                tileNum1 = gp.tileManager.mapTileNum[entityRightCol][entityUpRow];
-                tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityDownRow];
+                tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityUpRow];
+                tileNum2 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityDownRow];
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
                     entity.collisionOn = true;
                 }
@@ -59,7 +59,7 @@ public class CollisionDetector {
             case RU -> {
                 entityRightCol = (entityRightX + entity.speed) / gp.tileSize;
                 entityUpRow = (entityUpY - entity.speed) / gp.tileSize;
-                tileNum1 = gp.tileManager.mapTileNum[entityRightCol][entityUpRow];
+                tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityUpRow];
                 //tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityDownRow];
 //                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
 //                    entity.collisionOn = true;
@@ -71,7 +71,7 @@ public class CollisionDetector {
             case RD -> {
                 entityRightCol = (entityRightX + entity.speed) / gp.tileSize;
                 entityDownRow = (entityDownY + entity.speed) / gp.tileSize;
-                tileNum1 = gp.tileManager.mapTileNum[entityRightCol][entityDownRow];
+                tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityDownRow];
                 //tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityDownRow];
 //                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
 //                    entity.collisionOn = true;
@@ -83,7 +83,7 @@ public class CollisionDetector {
             case LD -> {
                 entityLeftCol = (entityLeftX - entity.speed) / gp.tileSize;
                 entityDownRow = (entityDownY + entity.speed) / gp.tileSize;
-                tileNum1 = gp.tileManager.mapTileNum[entityLeftCol][entityDownRow];
+                tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityDownRow];
                 //tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityDownRow];
 //                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
 //                    entity.collisionOn = true;
@@ -95,7 +95,7 @@ public class CollisionDetector {
             case LU -> {
                 entityLeftCol = (entityLeftX - entity.speed) / gp.tileSize;
                 entityUpRow = (entityUpY - entity.speed) / gp.tileSize;
-                tileNum1 = gp.tileManager.mapTileNum[entityLeftCol][entityUpRow];
+                tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityUpRow];
                 //tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityDownRow];
 //                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
 //                    entity.collisionOn = true;
@@ -105,6 +105,56 @@ public class CollisionDetector {
                 }
             }
         }
+    }
+
+    public int checkObject(Entity entity, boolean player) {
+        int idx = 999;
+
+        for (int i = 0; i < gp.objects[gp.currentMap].length; i ++) {
+            if (gp.objects[gp.currentMap][i] != null) {
+                //get entity's hitBox
+                entity.hitBox.x = entity.worldLoc.getXPosition() + entity.hitBox.x;
+                entity.hitBox.y = entity.worldLoc.getYPosition() + entity.hitBox.y;
+                //get target's hitBox
+                gp.objects[gp.currentMap][i].hitBox.x = gp.objects[gp.currentMap][i].worldLoc.getXPosition() + gp.objects[gp.currentMap][i].hitBox.x;
+                gp.objects[gp.currentMap][i].hitBox.y = gp.objects[gp.currentMap][i].worldLoc.getYPosition() + gp.objects[gp.currentMap][i].hitBox.y;
+
+                switch (entity.direction) {
+                    case U -> entity.hitBox.y -= entity.speed;
+                    case D -> entity.hitBox.y += entity.speed;
+                    case L -> entity.hitBox.x -= entity.speed;
+                    case R -> entity.hitBox.x += entity.speed;
+                    case RU -> {
+                        entity.hitBox.x += entity.speed;
+                        entity.hitBox.y -= entity.speed;
+                    }
+                    case RD -> {
+                        entity.hitBox.x += entity.speed;
+                        entity.hitBox.y += entity.speed;
+                    }
+                    case LD -> {
+                        entity.hitBox.x -= entity.speed;
+                        entity.hitBox.y += entity.speed;
+                    }
+                    case LU -> {
+                        entity.hitBox.x -= entity.speed;
+                        entity.hitBox.y -= entity.speed;
+                    }
+                }
+                if (entity.hitBox.intersects(gp.objects[gp.currentMap][i].hitBox)) {
+                    entity.collisionOn = true;
+                    idx = i;
+                }
+
+                entity.hitBox.x = entity.hitBoxDefaultX;
+                entity.hitBox.y = entity.hitBoxDefaultY;
+                gp.objects[gp.currentMap][i].hitBox.x = gp.objects[gp.currentMap][i].hitBoxDefaultX;
+                gp.objects[gp.currentMap][i].hitBox.y = gp.objects[gp.currentMap][i].hitBoxDefaultY;
+            }
+        }
+
+        //return the index of the object that the entity is colliding with
+        return idx;
     }
 
     public int checkEntity(Entity entity, Entity[] target) {

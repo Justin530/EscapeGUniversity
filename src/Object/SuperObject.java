@@ -31,7 +31,10 @@ public class SuperObject {
             worldX - gp.tileSize < gp.player.worldLoc.getXPosition() + gp.player.screenLoc.getXPosition() &&
             worldY + gp.tileSize > gp.player.worldLoc.getYPosition() - gp.player.screenLoc.getYPosition() &&
             worldY - gp.tileSize < gp.player.worldLoc.getYPosition() + gp.player.screenLoc.getYPosition()) {
-                g2d.drawImage(img, screenX, screenY, gp.tileSize, gp.tileSize, null);
+
+            g2d.drawImage(img, screenX, screenY, gp.tileSize, gp.tileSize, null);
         }
     }
+
+    public void interact() {}
 }

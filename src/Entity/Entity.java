@@ -61,7 +61,7 @@ public class Entity {
     public void checkCollision() {
         collisionOn = false;
         gp.collisionDetector.checkTile(this);
-        gp.collisionDetector.checkEntity(this, gp.monsters);
+        gp.collisionDetector.checkEntity(this, gp.monsters[gp.currentMap]);
         boolean contactPlayer = gp.collisionDetector.checkPlayer(this);
 
         if (type == 1 && contactPlayer) {

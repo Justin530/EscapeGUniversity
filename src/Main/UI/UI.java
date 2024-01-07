@@ -60,6 +60,9 @@ public class UI {
         if (gp.gameState == gp.gameOverState) {
             drawGameOverScreen();
         }
+        if (gp.gameState == gp.characterState) {
+            drawCharacterScreen();
+        }
     }
 
     public void drawPauseScreen(){
@@ -161,5 +164,9 @@ public class UI {
         if (commandNum == 1) {
             g2d.drawString(">", x - 40, y);
         }
+    }
+
+    public void drawCharacterScreen() {
+
     }
 }

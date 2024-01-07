@@ -26,6 +26,8 @@ public class GamePanel extends JPanel implements Runnable{
     public final int maxWorldRow = 50;
     public final int worldWidth = tileSize * maxWorldCol;// 2400 pixels
     public final int worldHeight = tileSize * maxWorldRow;// 2400 pixels
+    public final int maxMap = 10;
+    public int currentMap = 0;
 
     final int FPS = 60;
 
@@ -41,8 +43,8 @@ public class GamePanel extends JPanel implements Runnable{
 
     //entities and objects
     public Player player = new Player(this, keyHandler);
-    public Entity[] monsters = new Entity[50];
-    public SuperObject[] objects = new SuperObject[50];
+    public Entity[][] monsters = new Entity[maxMap][50];
+    public SuperObject[][] objects = new SuperObject[maxMap][50];
     ArrayList<Entity> entityList = new ArrayList<Entity>();
     public ArrayList<Entity> flyingObjectList = new ArrayList<Entity>();
 
@@ -51,6 +53,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int playState = 1;
     public final int pauseState = 2;
     public final int gameOverState = 3;
+    public final int characterState = 4;
 
     public GamePanel(){
         setFocusable(true);
@@ -65,6 +68,7 @@ public class GamePanel extends JPanel implements Runnable{
      */
     public void setupGame() {
         assetSetter.setMonsters();
+        assetSetter.setObjects();
 
         playMusic(0);
         gameState = playState;
@@ -139,13 +143,13 @@ public class GamePanel extends JPanel implements Runnable{
             player.update();
 
             //Update the monsters
-            for (int i = 0; i < monsters.length; i++) {
-                if (monsters[i] != null) {
-                    if (monsters[i].alive && !monsters[i].dying) {
-                        monsters[i].update();
+            for (int i = 0; i < monsters[currentMap].length; i++) {
+                if (monsters[currentMap][i] != null) {
+                    if (monsters[currentMap][i].alive && !monsters[currentMap][i].dying) {
+                        monsters[currentMap][i].update();
                     }
-                    if (!monsters[i].alive) {
-                        monsters[i] = null;
+                    if (!monsters[currentMap][i].alive) {
+                        monsters[currentMap][i] = null;
                     }
                 }
             }
@@ -175,13 +179,19 @@ public class GamePanel extends JPanel implements Runnable{
         //Draw the world
         tileManager.draw(g2d);
 
+        for (int i = 0; i < objects[currentMap].length; i++) {
+            if (objects[currentMap][i] != null) {
+                objects[currentMap][i].draw(g2d, this);
+            }
+        }
+
         //Draw the player
         player.draw(g2d);
 
         //Draw the monsters
-        for (int i = 0; i < monsters.length; i++) {
-            if (monsters[i] != null) {
-                monsters[i].draw(g2d);
+        for (int i = 0; i < monsters[currentMap].length; i++) {
+            if (monsters[currentMap][i] != null) {
+                monsters[currentMap][i].draw(g2d);
             }
         }
 
@@ -190,7 +200,6 @@ public class GamePanel extends JPanel implements Runnable{
                 flyingObjectList.get(i).draw(g2d);
             }
         }
-
 
         //UI
         ui.draw(g2d);

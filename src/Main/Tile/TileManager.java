@@ -16,7 +16,7 @@ import java.util.Objects;
 public class TileManager {
     GamePanel gp;
     public Tile[] tile;// stores all types of tiles
-    public int[][] mapTileNum;// 2D array of tile numbers
+    public int[][][] mapTileNum;// 2D array of tile numbers
     ArrayList<String> fileNames = new ArrayList<String>();
     ArrayList<String> collisionStatus = new ArrayList<String>();
 
@@ -43,9 +43,10 @@ public class TileManager {
         tile = new Tile[fileNames.size()];
         getTileImage();
 
-        mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
+        mapTileNum = new int[gp.maxMap][gp.maxWorldCol][gp.maxWorldRow];
 
-        LoadMap("/res/map/worldmap.txt");
+        LoadMap("/res/map/worldmap.txt", 0);
+        LoadMap("/res/map/dungeon01.txt", 1);
     }
 
     public void getTileImage() {
@@ -71,6 +72,9 @@ public class TileManager {
         }
     }
 
+    /**
+     * set up the tile's image and collision status
+     */
     public void setup(int idx, String imageName, boolean collision) {
         UtilityTool utilityTool = new UtilityTool();
 
@@ -85,7 +89,7 @@ public class TileManager {
         }
     }
 
-    public void LoadMap(String filePath) {
+    public void LoadMap(String filePath, int map) {
         try {
             InputStream is = getClass().getResourceAsStream(filePath);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -97,7 +101,7 @@ public class TileManager {
                 String[] tokens = line.split(" ");
 
                 for (String token : tokens) {
-                    mapTileNum[col][row] = Integer.parseInt(token);
+                    mapTileNum[map][col][row] = Integer.parseInt(token);
                     col++;
                 }
 
@@ -117,7 +121,7 @@ public class TileManager {
         int worldCol = 0, worldRow = 0;
 
         while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
-            int tileNum = mapTileNum[worldCol][worldRow];
+            int tileNum = mapTileNum[gp.currentMap][worldCol][worldRow];
 
             int worldX = worldCol * gp.tileSize;
             int worldY = worldRow * gp.tileSize;

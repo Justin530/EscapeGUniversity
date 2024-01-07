@@ -26,32 +26,13 @@ public class KeyHandler  implements KeyListener {
         if (gp.gameState == gp.playState) {
             playState(code);
         }
-
-        if (code == KeyEvent.VK_W){
-            upPressed = true;
+        else if (gp.gameState == gp.pauseState) {
+            if (code == KeyEvent.VK_P) {
+                gp.gameState = gp.playState;
+            }
         }
-        if (code == KeyEvent.VK_S){
-            downPressed = true;
-        }
-        if (code == KeyEvent.VK_A){
-            leftPressed = true;
-        }
-        if (code == KeyEvent.VK_D){
-            rightPressed = true;
-        }
-        if (code == KeyEvent.VK_J){
-            attackPressed = true;
-        }
-        if (code == KeyEvent.VK_K){
-            shotKeyPressed = true;
-        }
-        if (code == KeyEvent.VK_L){
-            greatPressed = true;
-        }
-        if (code == KeyEvent.VK_P){
-            if(gp.gameState == gp.playState){
-                gp.gameState = gp.pauseState;
-            }else if(gp.gameState == gp.pauseState){
+        else if (gp.gameState == gp.characterState) {
+            if (code == KeyEvent.VK_B) {
                 gp.gameState = gp.playState;
             }
         }
@@ -109,8 +90,11 @@ public class KeyHandler  implements KeyListener {
         if (code == KeyEvent.VK_P){
             if(gp.gameState == gp.playState){
                 gp.gameState = gp.pauseState;
-            }else if(gp.gameState == gp.pauseState){
-                gp.gameState = gp.playState;
+            }
+        }
+        if (code == KeyEvent.VK_B){
+            if(gp.gameState == gp.playState){
+                gp.gameState = gp.characterState;
             }
         }
     }

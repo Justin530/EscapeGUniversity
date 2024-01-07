@@ -6,14 +6,12 @@ import Main.KeyHandler;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 public class Player extends Entity{
     KeyHandler keyH;
     public final Location screenLoc = new Location(0, 0);
-    private int sign_weapon;//等于0是剑，等于1是火球
-    private int coldDown;//设定的冷却时间
-    private int CD;//现在武器剩余的冷却时间
-    private int onAttackState;//受攻击的间隔
+    public int potionCount = 0;//number of potions
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
@@ -116,8 +114,12 @@ public class Player extends Entity{
             collisionOn = false;
             gp.collisionDetector.checkTile(this);
 
+            //check object collision
+            int objectIndex = gp.collisionDetector.checkObject(this, true);
+            interactObject(objectIndex);
+
             //check monster collision
-            int monsterIndex = gp.collisionDetector.checkEntity(this, gp.monsters);
+            int monsterIndex = gp.collisionDetector.checkEntity(this, gp.monsters[gp.currentMap]);
             interactMonster(monsterIndex);
 
             //if collision is detected, player cannot move
@@ -180,7 +182,7 @@ public class Player extends Entity{
 
     public void interactMonster(int i) {
         if (i != 999) {
-            if (!invincible && !gp.monsters[i].dying) {
+            if (!invincible && !gp.monsters[gp.currentMap][i].dying) {
                 HP --;
                 invincible = true;
             }
@@ -189,16 +191,16 @@ public class Player extends Entity{
 
     public void damageMonster(int i, int attack) {
         if (i != 999) {
-            if (!gp.monsters[i].invincible) {
-                gp.monsters[i].HP -= attack;
+            if (!gp.monsters[gp.currentMap][i].invincible) {
+                gp.monsters[gp.currentMap][i].HP -= attack;
                 gp.ui.addMessage("-" + attack);
 
-                gp.monsters[i].invincible = true;
-                gp.monsters[i].damageReaction();
+                gp.monsters[gp.currentMap][i].invincible = true;
+                gp.monsters[gp.currentMap][i].damageReaction();
 
-                if (gp.monsters[i].HP <= 0) {
-                    gp.monsters[i].dying = true;
-                    gp.ui.addMessage("killed the " + gp.monsters[i].name);
+                if (gp.monsters[gp.currentMap][i].HP <= 0) {
+                    gp.monsters[gp.currentMap][i].dying = true;
+                    gp.ui.addMessage("killed the " + gp.monsters[gp.currentMap][i].name);
                 }
             }
         }
@@ -235,7 +237,7 @@ public class Player extends Entity{
             hitBox.width = attackBox.width;
             hitBox.height = attackBox.height;
             //check monster collision with updated hitBox and worldLoc
-            int monsterIndex = gp.collisionDetector.checkEntity(this, gp.monsters);
+            int monsterIndex = gp.collisionDetector.checkEntity(this, gp.monsters[gp.currentMap]);
             damageMonster(monsterIndex, attack);
             if (monsterIndex == 999 && spriteCount == 25) {
                 gp.ui.addMessage("Miss!");
@@ -254,9 +256,18 @@ public class Player extends Entity{
         }
     }
 
+    public void interactObject(int i) {
+        if (i != 999) {
+            if (Objects.equals(gp.objects[gp.currentMap][i].name, "potion")) {
+                potionCount ++;
+            }
+            gp.objects[gp.currentMap][i].interact();
+            gp.objects[gp.currentMap][i] = null;
+        }
+    }
+
     /**
      * 绘画血条、人物移动等
-     * @param g2d
      */
     public void draw(Graphics2D g2d) {
         int x = screenLoc.getXPosition(), y = screenLoc.getYPosition();

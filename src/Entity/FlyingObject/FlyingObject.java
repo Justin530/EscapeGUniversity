@@ -21,7 +21,7 @@ public class FlyingObject  extends Entity {
 
     public void update() {
         if (user == gp.player){
-            int monsterIndex = gp.collisionDetector.checkEntity(this, gp.monsters);
+            int monsterIndex = gp.collisionDetector.checkEntity(this, gp.monsters[gp.currentMap]);
             if (monsterIndex != 999) {
                 gp.player.damageMonster(monsterIndex, attack);
                 alive = false;

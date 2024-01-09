@@ -58,7 +58,7 @@ public class GamePanel extends JPanel implements Runnable{
     public GamePanel(){
         setFocusable(true);
         setPreferredSize(new Dimension(screenWidth, screenHeight));
-        setBackground(Color.BLACK);
+        setBackground(new Color(84, 164, 31));
         setDoubleBuffered(true);
         addKeyListener(keyHandler);
     }
@@ -156,7 +156,7 @@ public class GamePanel extends JPanel implements Runnable{
 
             for (int i = 0; i < flyingObjectList.size(); i++) {
                 if (flyingObjectList.get(i) != null) {
-                    if (flyingObjectList.get(i).alive) {
+                    if (flyingObjectList.get(i).alive && !flyingObjectList.get(i).dying) {
                         flyingObjectList.get(i).update();
                     }
                     if (!flyingObjectList.get(i).alive) {

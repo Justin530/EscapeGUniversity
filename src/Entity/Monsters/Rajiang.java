@@ -1,9 +1,8 @@
 package Entity.Monsters;
 
-import Entity.FlyingObject.Rock;
+import Entity.FlyingObject.GhostBall;
 import Main.GamePanel;
 import Entity.*;
-import AI.*;
 
 import java.util.Random;
 
@@ -15,7 +14,7 @@ public class Rajiang extends Entity{
         name = "Rajiang";
         maxHP = 8;
         HP = maxHP;
-        flyingObject = new Rock(gp);
+        flyingObject = new GhostBall(gp);
 
         hitBox.x = 8;//start from the corner of the image
         hitBox.y = 16;

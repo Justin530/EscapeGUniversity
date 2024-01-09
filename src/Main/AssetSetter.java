@@ -17,6 +17,10 @@ public class AssetSetter {
         gp.objects[0][1] = new OBJ_Potion(gp);
         gp.objects[0][1].worldLoc.setXPosition(gp.tileSize * 20);
         gp.objects[0][1].worldLoc.setYPosition(gp.tileSize * 20);
+
+        gp.objects[0][2] = new OBJ_Board(gp);
+        gp.objects[0][2].worldLoc.setXPosition(gp.tileSize * 3);
+        gp.objects[0][2].worldLoc.setYPosition(gp.tileSize * 3);
     }
 
     public void setMonsters() {

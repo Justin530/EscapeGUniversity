@@ -33,8 +33,11 @@ public class UI {
 
     public void addMessage(String text) {
         Message messageI = new Message(gp, text);
-        message.add(messageI);
-        messageCounter.add(0);
+        if (!messageI.added) {
+            message.add(messageI);
+            messageCounter.add(0);
+            messageI.added = true;
+        }
     }
 
     public void addMessage(Message message) {
@@ -133,6 +136,25 @@ public class UI {
 
     public void drawEntityMessage() {
         //todo
+    }
+
+    public void drawDialogueScreen() {
+        //the window
+        int x = gp.tileSize * 2;
+        int y = gp.tileSize / 2;
+        int width = gp.screenWidth - gp.tileSize * 4;
+        int height = gp.tileSize * 4;
+
+        drawSubwindow(x, y, width, height);
+    }
+
+    public void drawSubwindow(int x, int y, int width, int height) {
+        Color color = new Color(0, 0, 0, 0);
+        g2d.setColor(color);
+        g2d.fillRoundRect(x, y, width, height, 35, 35);
+
+        color = new Color(255, 255, 255);
+        g2d.setStroke(new BasicStroke(5));
     }
 
     public void drawGameOverScreen(){

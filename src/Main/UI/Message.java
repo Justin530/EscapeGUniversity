@@ -7,6 +7,7 @@ public class Message {
     public String message;
     public int messageX;//the x position of the message
     public int messageY;//the y position of the message
+    public boolean added = false;
 
     public Message(GamePanel gp) {
         this.gp = gp;

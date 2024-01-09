@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler  implements KeyListener {
     public boolean upPressed, downPressed, leftPressed, rightPressed,
-            attackPressed, shotKeyPressed, greatPressed;
+            attackPressed, changeWeaponPressed, greatPressed, interactPressed;
 
 
 
@@ -15,9 +15,7 @@ public class KeyHandler  implements KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -58,10 +56,13 @@ public class KeyHandler  implements KeyListener {
             attackPressed = false;
         }
         if (code == KeyEvent.VK_K){
-            shotKeyPressed = false;
+            changeWeaponPressed = false;
         }
         if (code == KeyEvent.VK_L){
             greatPressed = false;
+        }
+        if (code == KeyEvent.VK_F){
+            interactPressed = false;
         }
     }
 
@@ -82,10 +83,13 @@ public class KeyHandler  implements KeyListener {
             attackPressed = true;
         }
         if (code == KeyEvent.VK_K){
-            shotKeyPressed = true;
+            changeWeaponPressed = true;
         }
         if (code == KeyEvent.VK_L){
             greatPressed = true;
+        }
+        if (code == KeyEvent.VK_F){
+            interactPressed = true;
         }
         if (code == KeyEvent.VK_P){
             if(gp.gameState == gp.playState){

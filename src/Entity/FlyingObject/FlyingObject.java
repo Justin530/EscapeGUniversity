@@ -3,6 +3,9 @@ package Entity.FlyingObject;
 import Entity.*;
 import Main.GamePanel;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
 public class FlyingObject  extends Entity {
     Entity user;
 
@@ -33,29 +36,8 @@ public class FlyingObject  extends Entity {
                 alive = false;
             }
         }
-
-        switch (direction) {
-            case U -> worldLoc.setYPosition(worldLoc.getYPosition() - speed);
-            case D -> worldLoc.setYPosition(worldLoc.getYPosition() + speed);
-            case L -> worldLoc.setXPosition(worldLoc.getXPosition() - speed);
-            case R -> worldLoc.setXPosition(worldLoc.getXPosition() + speed);
-            case LD -> {
-                worldLoc.setXPosition(worldLoc.getXPosition() - speed);
-                worldLoc.setYPosition(worldLoc.getYPosition() + speed);
-            }
-            case RD -> {
-                worldLoc.setYPosition(worldLoc.getYPosition() + speed);
-                worldLoc.setXPosition(worldLoc.getXPosition() + speed);
-            }
-            case LU -> {
-                worldLoc.setXPosition(worldLoc.getXPosition() - speed);
-                worldLoc.setYPosition(worldLoc.getYPosition() - speed);
-            }
-            case RU -> {
-                worldLoc.setXPosition(worldLoc.getXPosition() + speed);
-                worldLoc.setYPosition(worldLoc.getYPosition() - speed);
-            }
-        }
+        //移动时，根据direction变化x，y坐标
+        move(this);
 
         HP --;
         if (HP <= 0) {

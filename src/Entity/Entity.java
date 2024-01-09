@@ -1,5 +1,6 @@
 package Entity;
 
+import Entity.FlyingObject.Bullet;
 import Entity.FlyingObject.FlyingObject;
 import Main.GamePanel;
 import Main.UtilityTool;
@@ -13,6 +14,7 @@ import java.util.Objects;
 public class Entity {
     public GamePanel gp;
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+    public BufferedImage up_left,up_right,down_left,down_right;
     public BufferedImage attack_up1, attack_up2, attack_down1, attack_down2, attack_left1, attack_left2, attack_right1, attack_right2;
     public Rectangle hitBox = new Rectangle(0, 0, 48, 48);
     public Rectangle attackBox = new Rectangle(0, 0, 0, 0);
@@ -39,7 +41,6 @@ public class Entity {
     public int shotAvailableCounter = 0;
 
 
-
     //character status
     public int type;//0:player, 1:monster
     public String name;
@@ -56,8 +57,12 @@ public class Entity {
         hitBox = new Rectangle(worldLoc.getXPosition(), worldLoc.getYPosition(), gp.tileSize, gp.tileSize);
     }
 
-    public void setAction() {}
-    public void damageReaction() {}
+    public void setAction() {
+    }
+
+    public void damageReaction() {
+    }
+
     public void checkCollision() {
         collisionOn = false;
         gp.collisionDetector.checkTile(this);
@@ -68,35 +73,15 @@ public class Entity {
             damagePlayer(attack);
         }
     }
+
     public void update() {
         setAction();
 
         checkCollision();
 
-        //if collision is detected, player cannot move
+        //if collision is detected, entity cannot move
         if (!collisionOn) {
-            switch (direction) {
-                case U -> worldLoc.setYPosition(worldLoc.getYPosition() - speed);
-                case D -> worldLoc.setYPosition(worldLoc.getYPosition() + speed);
-                case L -> worldLoc.setXPosition(worldLoc.getXPosition() - speed);
-                case R -> worldLoc.setXPosition(worldLoc.getXPosition() + speed);
-                case LD -> {
-                    worldLoc.setXPosition(worldLoc.getXPosition() - speed);
-                    worldLoc.setYPosition(worldLoc.getYPosition() + speed);
-                }
-                case RD -> {
-                    worldLoc.setYPosition(worldLoc.getYPosition() + speed);
-                    worldLoc.setXPosition(worldLoc.getXPosition() + speed);
-                }
-                case LU -> {
-                    worldLoc.setXPosition(worldLoc.getXPosition() - speed);
-                    worldLoc.setYPosition(worldLoc.getYPosition() - speed);
-                }
-                case RU -> {
-                    worldLoc.setXPosition(worldLoc.getXPosition() + speed);
-                    worldLoc.setYPosition(worldLoc.getYPosition() - speed);
-                }
-            }
+            move(this);
         }
 
         if (spriteCount == 10) {
@@ -107,7 +92,7 @@ public class Entity {
         }
 
         if (invincible) {
-            invincibleCounter ++;
+            invincibleCounter++;
             if (invincibleCounter >= 40) {
                 invincible = false;
                 invincibleCounter = 0;
@@ -131,29 +116,44 @@ public class Entity {
         int screenY = worldY - gp.player.worldLoc.getYPosition() + gp.player.screenLoc.getYPosition();
 
         if (worldX + gp.tileSize > gp.player.worldLoc.getXPosition() - gp.player.screenLoc.getXPosition() &&
-            worldX - gp.tileSize < gp.player.worldLoc.getXPosition() + gp.player.screenLoc.getXPosition() &&
-            worldY + gp.tileSize > gp.player.worldLoc.getYPosition() - gp.player.screenLoc.getYPosition() &&
-            worldY - gp.tileSize < gp.player.worldLoc.getYPosition() + gp.player.screenLoc.getYPosition()) {
+                worldX - gp.tileSize < gp.player.worldLoc.getXPosition() + gp.player.screenLoc.getXPosition() &&
+                worldY + gp.tileSize > gp.player.worldLoc.getYPosition() - gp.player.screenLoc.getYPosition() &&
+                worldY - gp.tileSize < gp.player.worldLoc.getYPosition() + gp.player.screenLoc.getYPosition()) {
 
-            img = switch (direction) {
-                case LU, U, RU -> (spriteNum == 1) ? up1 : (spriteNum == 2) ? up2 : null;
-                case LD, D, RD -> (spriteNum == 1) ? down1 : (spriteNum == 2) ? down2 : null;
-                case L -> (spriteNum == 1) ? left1 : (spriteNum == 2) ? left2 : null;
-                case R -> (spriteNum == 1) ? right1 : (spriteNum == 2) ? right2 : null;
-                default -> null;
-            };
+            if (this instanceof Bullet) {
+                //子弹有八个方向，我没在Entity中加另外四个方向的图片变量，直接在这特殊处理了
+                img = switch (direction) {
+                    case LU -> up2;
+                    case RU -> right2;
+                    case LD -> left2;
+                    case RD -> down2;
+                    case U -> up1;
+                    case D -> down1;
+                    case L -> left1;
+                    case R -> right1;
+                    default -> null;
+                };
+            } else {
+                img = switch (direction) {
+                    case LU, U, RU -> (spriteNum == 1) ? up1 : (spriteNum == 2) ? up2 : null;
+                    case LD, D, RD -> (spriteNum == 1) ? down1 : (spriteNum == 2) ? down2 : null;
+                    case L -> (spriteNum == 1) ? left1 : (spriteNum == 2) ? left2 : null;
+                    case R -> (spriteNum == 1) ? right1 : (spriteNum == 2) ? right2 : null;
+                    default -> null;
+                };
+            }
             //monster HP bar
             if (type == 1 && hpBarOn) {
-                double oneScale = (double)gp.tileSize / maxHP;
+                double oneScale = (double) gp.tileSize / maxHP;
                 double hpBarScale = oneScale * HP;
 
                 g2d.setColor(new Color(35, 35, 35));
                 g2d.fillRect(screenX - 1, screenY - 16, gp.tileSize + 2, 12);
 
                 g2d.setColor(new Color(255, 0, 50));
-                g2d.fillRect(screenX, screenY - 15, (int)hpBarScale, 10);
+                g2d.fillRect(screenX, screenY - 15, (int) hpBarScale, 10);
 
-                hpBarCounter ++;
+                hpBarCounter++;
                 if (hpBarCounter >= 600) {
                     hpBarOn = false;
                     hpBarCounter = 0;
@@ -175,7 +175,7 @@ public class Entity {
     }
 
     public void dyingAnimation(Graphics2D g2d) {
-        dyingCounter ++;
+        dyingCounter++;
 
         if (dyingCounter <= 5) {
             changeAlpha(g2d, 0.0f);
@@ -199,6 +199,7 @@ public class Entity {
             dyingCounter = 0;
         }
     }
+
     public void changeAlpha(Graphics2D g2d, float alpha) {
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
     }
@@ -278,6 +279,31 @@ public class Entity {
 //            if (nextCol == goalCol && nextRow == goalRow) {
 //                onPath = false;
 //            }
+        }
+    }
+
+    protected void move(Entity self) {
+        switch (self.direction) {
+            case U -> self.worldLoc.setYPosition(self.worldLoc.getYPosition() - self.speed);
+            case D -> self.worldLoc.setYPosition(self.worldLoc.getYPosition() + self.speed);
+            case L -> self.worldLoc.setXPosition(self.worldLoc.getXPosition() - self.speed);
+            case R -> self.worldLoc.setXPosition(self.worldLoc.getXPosition() + self.speed);
+            case LD -> {
+                self.worldLoc.setXPosition(self.worldLoc.getXPosition() - self.speed);
+                self.worldLoc.setYPosition(self.worldLoc.getYPosition() + self.speed);
+            }
+            case RD -> {
+                self.worldLoc.setYPosition(self.worldLoc.getYPosition() + self.speed);
+                self.worldLoc.setXPosition(self.worldLoc.getXPosition() + self.speed);
+            }
+            case LU -> {
+                self.worldLoc.setXPosition(self.worldLoc.getXPosition() - self.speed);
+                self.worldLoc.setYPosition(self.worldLoc.getYPosition() - self.speed);
+            }
+            case RU -> {
+                self.worldLoc.setXPosition(self.worldLoc.getXPosition() + self.speed);
+                self.worldLoc.setYPosition(self.worldLoc.getYPosition() - self.speed);
+            }
         }
     }
 }

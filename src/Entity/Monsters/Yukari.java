@@ -65,33 +65,37 @@ public class Yukari extends Entity {
         int yDistance = Math.abs(worldLoc.getYPosition() - gp.player.worldLoc.getYPosition());
         int tileDistance = (xDistance + yDistance) / gp.tileSize;
 
-        if (!onPath && tileDistance >10) {
+        if (!onPath && (tileDistance >10 || tileDistance <=6)) {
                 onPath = true;
-        }else if (onPath && tileDistance <=5) {
+        }else if (onPath && tileDistance >6&&tileDistance<=10) {
             onPath = false;
         }
     }
     @Override
     public void setAction(){
-        if(attackIntervalCounter<=150) {
-            if(bulletCounter%15 == 0&&bulletCounter<=105) {
+        if(attackIntervalCounter<=300) {
+            if(bulletCounter<=210) {
                 //flyingObject.set(worldLoc.getXPosition(), worldLoc.getYPosition(), hachiDirs[attackIntervalCounter / 60], true, this);
                 //gp.flyingObjectList.add(flyingObject);
-                balls[bulletCounter / 15].set(worldLoc.getXPosition(), worldLoc.getYPosition(), balls[bulletCounter/15].direction,true,this);
-                gp.flyingObjectList.add(balls[bulletCounter / 15]);
+                if(bulletCounter%30 == 0) {
+                    //System.out.println(bulletCounter / 60);
+                    balls[bulletCounter / 30].set(worldLoc.getXPosition() + balls[bulletCounter / 30].direction.getDx() * 48, worldLoc.getYPosition() + balls[bulletCounter / 30].direction.getDy() * 48,hachiDirs[bulletCounter/30], true, this);
+                    gp.flyingObjectList.add(balls[bulletCounter / 30]);
+                    //System.out.println( balls[bulletCounter / 30].direction);
+                }
                 attackIntervalCounter ++;
                 bulletCounter ++;
             }
-            else{
+            else if(bulletCounter>210){
                 attackIntervalCounter ++;
-                bulletCounter ++;
             }
         }else {
             attackIntervalCounter = 0;
             bulletCounter = 0;
         }
         if (onPath) {
-            direction = QuickPathFinder.findNextStep(this,this.gp.player.worldLoc);
+            if(pController.nextInt(4) == 1)
+                direction = QuickPathFinder.findNextStep(this,this.gp.player.worldLoc);
         } else {
             actionLockCounter ++;
             if (actionLockCounter == 60) {
@@ -133,8 +137,8 @@ public class Yukari extends Entity {
                 double oneScale = (double) gp.tileSize / maxHP;
                 double hpBarScale = 10*oneScale * HP;
 
-/*                g2d.setColor(new Color(35, 35, 35));
-                g2d.fillRect(screenX - 1, screenY - 16, gp.tileSize + 2, 12);*/
+                g2d.setColor(new Color(35, 35, 35));
+                g2d.fillRect(148, 520, (int)(10*oneScale*maxHP), 12);
 
                 g2d.setColor(new Color(142, 8, 8, 250));
                 g2d.fillRect(148, 520, (int) hpBarScale, 10);
@@ -154,7 +158,7 @@ public class Yukari extends Entity {
             if (dying) {
                 dyingAnimation(g2d);
             }
-            g2d.drawImage(img, screenX, screenY, gp.tileSize*3, gp.tileSize*3, null);
+            g2d.drawImage(img, screenX-48, screenY-48, gp.tileSize*3, gp.tileSize*3, null);
             //reset alpha
             changeAlpha(g2d, 1.0f);
         }

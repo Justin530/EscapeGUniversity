@@ -80,10 +80,6 @@ public class AllMap extends JFrame {
 
     }
 
-   /* public static void main(String[] args) {
-        //new AllMap();
-    }*/
-
     public AllMap getJFrame(){
         return this;
     }
@@ -94,7 +90,6 @@ public class AllMap extends JFrame {
 
     public static void updateMap(){
 
-        //System.out.println("jjjjjjj");
         for (int i = 0; i < 50; i++) {
             for (int j = 0; j < 50; j++) {
 

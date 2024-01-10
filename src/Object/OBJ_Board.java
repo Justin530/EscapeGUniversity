@@ -41,11 +41,12 @@ public class OBJ_Board extends SuperObject{
     public void setDialogues() {
         dialogues[0] = "";
         dialogues[1] = "当你看到这则消息时,\n我应该已经死了，\n但是我想给你一些引导";
-        dialogues[2] = "你可以使用 wasd 来移动";
-        dialogues[3] = "你有两把武器，\n一把是近战武器，一把是远程武器，\n按 j 键来进行攻击";
-        dialogues[4] = "你可以通过按 k 键来切换武器,\n也可以通过按 l 键来使用大招";
-        dialogues[5] = "贩卖机边上有些红瓶子，\n应该可以救你一命";
-        dialogues[6] = "后来者啊，\n活下去，\n找到真相";
-        dialogues[7] = "祝你 运";
+        dialogues[2] = "图书馆的一楼已经被Rajiang们占领了，\n要去到安全屋你就得打败他们以及他们的首领。";
+        dialogues[3] = "很遗憾，我失败了，\n但是我相信你可以做到。";
+        dialogues[4] = "你有两把武器，\n一把是近战武器，一把是远程武器，\n按 j 键来进行攻击";
+        dialogues[5] = "你可以通过按 k 键来切换武器,\n也可以通过按 l 键来使用大招";
+        dialogues[6] = "贩卖机边上有些红瓶子，\n应该可以救你一命";
+        dialogues[7] = "后来者啊，\n活下去，\n找到真相";
+        dialogues[8] = "祝你好运";
     }
 }

@@ -66,15 +66,4 @@ public class ImageAmplify {
         out.close();
     }
 
-
-   /* public static void main(String[] args) throws IOException {
-        String path;
-        path="src/res/带血的地板007.png";
-
-        ImageAmplify imageAmplify=new ImageAmplify(path);
-
-        imageAmplify.zoomBySize(48,48);
-
-    }*/
-
 }

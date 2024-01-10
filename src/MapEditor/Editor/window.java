@@ -14,16 +14,8 @@ import java.util.Objects;
 
 public class window extends JFrame {
 
-  /*  private static int ImageWidth = 48;
-    private static int ImageHeight = 48;
-    private static int rows = 50;
-    private static int columns = 50;
-    private int LocationX = 0;
-    private int LocationY = 0;*/
 
     private JButton[][] jButtons2 = new JButton[10][17];
-    //private int[][] j2=new int[9][16];
-
     int SelectedButtonX;
     int SelectedButtonY;
 
@@ -187,7 +179,6 @@ public class window extends JFrame {
                     if (viewy > 0) {
                         viewy--;
                     }
-                    //System.out.println(viewx+" "+viewy+" "+nums[viewx][viewy]);
                     update();
 
                     jLabel6.setText("右下角方块坐标：(" + (viewx + 9) + "," + (viewy + 16) + ")");
@@ -197,8 +188,6 @@ public class window extends JFrame {
                     if (viewx > 0) {
                         viewx--;
                     }
-                    // System.out.println(viewx+" "+viewy+" "+nums[viewx][viewy]);
-
                     update();
 
                     jLabel6.setText("右下角方块坐标：(" + (viewx + 9) + "," + (viewy + 16) + ")");
@@ -207,7 +196,6 @@ public class window extends JFrame {
                     if (viewy < 34) {
                         viewy++;
                     }
-                    // System.out.println(viewx+" "+viewy+" "+nums[viewx][viewy]);
                     update();
 
                     jLabel6.setText("右下角方块坐标：(" + (viewx + 9) + "," + (viewy + 16) + ")");
@@ -216,15 +204,12 @@ public class window extends JFrame {
                     if (viewx < 41) {
                         viewx++;
                     }
-                    //   System.out.println(viewx+" "+viewy+" "+nums[viewx][viewy]);
                     update();
 
                     jLabel6.setText("右下角方块坐标：(" + (viewx + 9) + "," + (viewy + 16) + ")");
                     getJFrame().validate();
                 }
 
-             //   System.out.println(c);
-               // System.out.println(code);
             }
 
             @Override
@@ -285,13 +270,10 @@ public class window extends JFrame {
                             ImageIcon icon1 = new ImageIcon(path1);
                             icon = icon1;
 
-                            // System.out.println(path1);
                         }
                         jButtons1[getJFrame().Judge1x()][getJFrame().Judge1y()].setIcon(icon);
-                        // System.out.println(path1);
                         j1[getJFrame().Judge1x()][getJFrame().Judge1y()] = SelectedIconNum;
                         icons[SelectedIconNum] = icon;
-                        //   System.out.println(getJFrame().Judge1x()+" "+getJFrame().Judge1y()+" "+SelectedIconNum);
                         getJFrame().validate();//验证JFrame容器下面的所有组件，然后重绘和重排各个组件
                     }
 
@@ -317,8 +299,6 @@ public class window extends JFrame {
                     String path1 = fc.getSelectedFile().getAbsolutePath();
 
 
-                  //  System.out.println(path1);
-
                     int SelectedIconNum;
                     SelectedIconNum = getSelectedIconNum(path1);
 
@@ -328,19 +308,10 @@ public class window extends JFrame {
 
 
                         if (indexP < 3) {
-                            //  System.out.println("小于");
 
                             continue;
 
-                            /*String  pre = path1.substring(0,indexP);
-                            StringBuilder num1 = new StringBuilder(String.valueOf(1000 + i));
-                            num1.deleteCharAt(0);
-                            String ext1 = path1.substring(indexP);
-                            path1 = pre + num1 + ext1;*/
-
                         } else if (!judgePath(path1)) {
-                            //   System.out.println("不满足");
-                            //indexP>=3但不满足命名要求的图片
 
                             continue;
 
@@ -426,8 +397,6 @@ public class window extends JFrame {
 
                             StringBuilder stringBuilder = new StringBuilder();
                             stringBuilder.append(1000 + j1[i][j]);
-                            // System.out.println(j1[i][j]+" "+stringBuilder);
-                            //stringBuilder.
                             stringBuilder.deleteCharAt(0);
                             stringBuilder.append(".png");
 
@@ -443,7 +412,6 @@ public class window extends JFrame {
                         }
                     }
                 }
-                //  System.out.println("获取");
             }
         });
 
@@ -503,7 +471,6 @@ public class window extends JFrame {
                             }
                             lineNum++;
                         }
-                        //读取nums
 
 
                         File fileImages=new File(path3);
@@ -514,9 +481,6 @@ public class window extends JFrame {
                             int S=getSelectedIconNum(filesImages[i].getAbsolutePath());
                             icons[S]=icon;
                         }
-                        //读取icons,path3,路径问题？？
-
-
 
                         BufferedReader bufferedReader1=new BufferedReader(new FileReader(path2));
                         String line1;
@@ -541,10 +505,6 @@ public class window extends JFrame {
                             }
                             imagesY++;
                         }
-                        //读取solids和j1,path2
-
-
-
 
                         update();
 
@@ -634,8 +594,6 @@ public class window extends JFrame {
                 }
 
                 getJFrame().validate();
-                // System.out.println("Image:"+j1[SelectedIcony][SelectedIconx]);
-                //System.out.println("Solid:"+Solids[SelectedIcony][SelectedIcony]);
             }
         });
 
@@ -645,7 +603,6 @@ public class window extends JFrame {
 
         JPanel jPanel1 = new JPanel();
         jPanel1.setBounds(50, 700, 960, 720);
-        // jPanel1.setBackground(Color.GRAY);
         jPanel1.setLayout(new MyLayout1());
         jPaneldi.add(jPanel1);
 
@@ -659,7 +616,6 @@ public class window extends JFrame {
                 jButton.setBackground(Color.BLACK);
                 jButton.setBorder(new LineBorder(Color.GREEN));
                 jPanel1.add(jButton);
-                //  jButton.setBorder(BorderFactory.createRaisedBevelBorder());
 
                 jButton.addActionListener(new ActionListener() {
                     @Override
@@ -686,26 +642,14 @@ public class window extends JFrame {
                             jLabel5.setText("");
                         }
 
-
-                        //  System.out.println(SelectedIcony+" "+SelectedIconx);
-
                         jLabel4.setText(String.valueOf(j1[SelectedIcony][SelectedIconx]));
-
-
-                        // System.out.println(SelectedIconx+" "+SelectedIcony);
-
 
                         getJFrame().validate();
 
                     }
                 });
-
-
                 getJFrame().validate();
-
                 jButtons1[i][j] = jButton;
-                //System.out.println(i+" "+j);
-
             }
         }
 
@@ -715,11 +659,8 @@ public class window extends JFrame {
 
         JPanel jPanel2 = new JPanel();
         jPanel2.setBounds(50, 80, 768, 432);
-        // jPanel2.setBackground(Color.GRAY);
         jPanel2.setLayout(new MyLayout1());
-        // jPanel2.setOpaque(false);
         jPaneldi.add(jPanel2);
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -730,7 +671,6 @@ public class window extends JFrame {
                 jButton.setBackground(Color.BLACK);
                 jButton.setBorder(new LineBorder(Color.GREEN));
                 jPanel2.add(jButton);
-                // jButton.setBorder(BorderFactory.createRaisedBevelBorder());
 
                 jButton.addActionListener(new ActionListener() {
                     @Override
@@ -780,18 +720,14 @@ public class window extends JFrame {
 
                             jButton.setIcon(SelectedIcon);
 
-                            // AllMap.updateMap(nums,icons);
-
                             nums[SelectedButtonY + viewx][SelectedButtonX + viewy] = j1[SelectedIcony][SelectedIconx];
                         }
 
-                        //System.out.println(MultiAdd[0]);
                     }
 
                     @Override
                     public void mouseReleased(MouseEvent e) {
                         MultiAdd[0] = 0;
-                        //  System.out.println(MultiAdd[0]);
                     }
 
                     @Override
@@ -809,10 +745,7 @@ public class window extends JFrame {
                                 }
                             }
 
-                            //System.out.println("x:"+x+" y:"+y);
                             jButton.setIcon(SelectedIcon);
-
-                            //AllMap.updateMap(nums,icons);
 
                             nums[SelectedButtonY + viewx][SelectedButtonX + viewy] = j1[SelectedIcony][SelectedIconx];
                         }
@@ -826,12 +759,8 @@ public class window extends JFrame {
                     }
                 });
 
-
                 getJFrame().validate();
-
                 jButtons2[i][j] = jButton;
-                //System.out.println(i+" "+j);
-
             }
         }
 
@@ -880,13 +809,6 @@ public class window extends JFrame {
         }
 
         String s = new String(chars);
-
-        //System.out.println(s);
-        //这里应该使用pathjudge
-
-
-        //  System.out.println(num);
-
         return Integer.parseInt(s);
     }
 
@@ -902,9 +824,6 @@ public class window extends JFrame {
                 int numsy = j + viewy;
 
                 int ImageNum = nums[numsx][numsy];
-
-                //System.out.println(numsx+" "+numsy+" "+ImageNum);
-
 
                 if (ImageNum != 0) {
                     jButtons2[i][j].setIcon(icons[ImageNum]);

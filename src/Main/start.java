@@ -22,7 +22,7 @@ public class start extends JFrame {
 
 
 
-        ImageIcon background = new ImageIcon("src/res/images/Mbg2bg2.png");
+        ImageIcon background = new ImageIcon("src/res/images/background.png");
        // backgound.setImage(backgound.getImage().getScaledInstance(768,576, Image.SCALE_DEFAULT));
         JLabel jLabel=new JLabel(background);
         jLabel.setBounds(0,0,768,576);
@@ -34,10 +34,9 @@ public class start extends JFrame {
 
 
 
-
         JButton jButton=new JButton();
         //jButton.setText("Enter");
-        jButton.setBounds(198,417,366,71);
+        jButton.setBounds(193,417,366,71);
         jButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -50,21 +49,19 @@ public class start extends JFrame {
         Font font1=new Font("jetbrains mono",Font.PLAIN,20);
         //consolas,jetbrains mono,Chalkboard,Comic Code Ligatures,Futura, Monaco
         jButton.setFont(fonte);
-        jButton.setIcon(new ImageIcon("src/res/images/button1.png"));
+        jButton.setIcon(new ImageIcon("src/res/images/ButtonE.png"));
 
         jButton.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                jButton.setBorderPainted(true);
-                jButton.setForeground(Color.gray);
+                jButton.setIcon(new ImageIcon("src/res/images/ButtonE2.png"));
                 getStart().validate();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                jButton.setBorderPainted(false);
-                jButton.setForeground(Color.black);
+                jButton.setIcon(new ImageIcon("src/res/images/ButtonE.png"));
                 getStart().validate();
             }
         });
@@ -77,9 +74,15 @@ public class start extends JFrame {
         imagePanel.add(jButton);
 
 
+
+
+
+
+
+
         JButton jButton1=new JButton();
-        jButton1.setText("设置");
-        jButton1.setBounds(60,310,150,40);
+       // jButton1.setText("设置");
+        jButton1.setBounds(610,513,116,25);
         jButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -88,36 +91,35 @@ public class start extends JFrame {
         });
 
 
-        jButton1.setFont(font1);
-        jButton1.setForeground(Color.CYAN);
+        //jButton1.setFont(font1);
+        //jButton1.setForeground(Color.CYAN);
+
+        jButton1.setIcon(new ImageIcon("src/res/images/setup.png"));
 
         jButton1.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                jButton1.setForeground(Color.MAGENTA);
+                jButton1.setIcon(new ImageIcon("src/res/images/setup2.png"));
                 getStart().validate();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                jButton1.setForeground(Color.CYAN);
+                jButton1.setIcon(new ImageIcon("src/res/images/setup.png"));
                 getStart().validate();
             }
         });
         //  jButton.setForeground(Color.gray);
 
-
         jButton1.setContentAreaFilled(false);
         jButton1.setBorderPainted(false);
-
-
 
         imagePanel.add(jButton1);
 
 
 
-        JButton jButton2=new JButton();
+        /*JButton jButton2=new JButton();
         jButton2.setText("操作说明");
         jButton2.setBounds(60,350,160,40);
         jButton2.addActionListener(new ActionListener() {
@@ -152,36 +154,46 @@ public class start extends JFrame {
         jButton2.setBorderPainted(false);
 
 
-        imagePanel.add(jButton2);
+        imagePanel.add(jButton2);*/
+
+
 
         JButton jButton3=new JButton();
-        jButton3.setText("地图编辑");
-        jButton3.setBounds(60,390,160,40);
+        //jButton3.setText("地图编辑");
+        jButton3.setBounds(185,513,383,24);
         jButton3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                window window=new window();
+                try {
+                    window window=new window();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
-        jButton3.setFont(font1);
-        jButton3.setForeground(Color.CYAN);
+        jButton3.setIcon(new ImageIcon("src/res/images/mapE.png"));
+
+       // jButton3.setFont(font1);
+       // jButton3.setForeground(Color.CYAN);
 
         jButton3.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                jButton3.setForeground(Color.MAGENTA);
+                jButton3.setIcon(new ImageIcon("src/res/images/mapE2.png"));
                 getStart().validate();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                jButton3.setForeground(Color.CYAN);
+                jButton3.setIcon(new ImageIcon("src/res/images/mapE.png"));
                 getStart().validate();
             }
         });
         //  jButton.setForeground(Color.gray);
+
+
 
 
         jButton3.setContentAreaFilled(false);
@@ -190,12 +202,12 @@ public class start extends JFrame {
 
         imagePanel.add(jButton3);
 
-        Color color1=new Color(252,227,186);
+        //Color color1=new Color(252,227,186);
 
 
         JButton jButton4=new JButton();
-        jButton4.setText("EXIT");
-        jButton4.setBounds(25,510,125,33);
+        //jButton4.setText("EXIT");
+        jButton4.setBounds(25,510,125,30);
         jButton4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -203,29 +215,30 @@ public class start extends JFrame {
             }
         });
 
-        jButton4.setFont(font1);
+       // jButton4.setFont(font1);
        // jButton4.setForeground(Color.CYAN);
-        jButton4.setBackground(color1);
+        //jButton4.setBackground(color1);
 
+        jButton4.setIcon(new ImageIcon("src/res/images/exit.png"));
         jButton4.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                jButton4.setForeground(Color.MAGENTA);
+                jButton4.setIcon(new ImageIcon("src/res/images/exit2.png"));
                 getStart().validate();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                jButton4.setForeground(Color.black);
+                jButton4.setIcon(new ImageIcon("src/res/images/exit.png"));
                 getStart().validate();
             }
         });
         //  jButton.setForeground(Color.gray);
 
 
-       // jButton4.setContentAreaFilled(false);
-        jButton4.setBorderPainted(false);
+       jButton4.setContentAreaFilled(false);
+       jButton4.setBorderPainted(false);
 
 
         imagePanel.add(jButton4);

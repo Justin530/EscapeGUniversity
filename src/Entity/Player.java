@@ -19,6 +19,7 @@ public class Player extends Entity {
     private int fireBallNumber = 80;//火球的数量
     private int CD;//武器的冷却
     private static final int COLDTIME = 10;
+    public int objectIndex = 999;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
@@ -86,6 +87,18 @@ public class Player extends Entity {
      * 处理键盘的输入
      */
     public void update() {
+        //check object collision
+        objectIndex = gp.collisionDetector.checkObject(this, true);
+        if (objectIndex != 999) {
+//            Message message = new Message(gp, "Press F to interact");
+//            gp.ui.addMessage(message);
+            if (keyH.interactPressed){
+//                System.out.println("interact");
+                interactObject(objectIndex);
+                //keyH.interactPressed = false;
+            }
+        }
+
         if (attacking) {
             attack();
         } else if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.attackPressed) {
@@ -121,16 +134,7 @@ public class Player extends Entity {
             collisionOn = false;
             gp.collisionDetector.checkTile(this);
 
-            //check object collision
-            int objectIndex = gp.collisionDetector.checkObject(this, true);
-            if (objectIndex != 999) {
-                Message message = new Message(gp, "Press F to interact");
-                gp.ui.addMessage(message);
-                if (keyH.interactPressed){
-//                    System.out.println("interact");
-                    interactObject(objectIndex);
-                }
-            }
+
 
             //check monster collision
             int monsterIndex = gp.collisionDetector.checkEntity(this, gp.monsters[gp.currentMap]);
@@ -308,6 +312,10 @@ public class Player extends Entity {
             gp.objects[gp.currentMap][i].interact();
             gp.objects[gp.currentMap][i] = null;
         }
+        else if (Objects.equals(gp.objects[gp.currentMap][i].name, "Board")) {
+            gp.gameState = gp.dialogueState;
+            gp.objects[gp.currentMap][i].interact();
+        }
     }
 
     /**
@@ -378,6 +386,23 @@ public class Player extends Entity {
         //reset alpha
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 
+        //加粗字体，美化一下
+        Font ori = g2d.getFont();
+        g2d.setFont(new Font("微软雅黑", Font.BOLD, 12));
+        //武器名
+        if (sign_weapon == 0) {
+            g2d.drawString("sword", screenLoc.getXPosition() + 7, screenLoc.getYPosition() - 4);
+        } else {
+            g2d.drawString("Bullet: " + fireBallNumber, screenLoc.getXPosition() - 7, screenLoc.getYPosition() - 4);
+        }
+
+        //飞行物还存在时，打印：正在装弹
+        Color customColor = new Color(200, 100, 5);//设置颜色
+        g2d.setColor(customColor);
+        if(flyingObject.alive){
+            g2d.drawString("正在装弹", screenLoc.getXPosition() , screenLoc.getYPosition() - 18);
+        }
+        g2d.setFont(ori);
         //减武器CD
         if (CD > 0) CD--;
     }

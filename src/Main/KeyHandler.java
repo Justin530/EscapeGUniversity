@@ -25,13 +25,47 @@ public class KeyHandler  implements KeyListener {
             playState(code);
         }
         else if (gp.gameState == gp.pauseState) {
-            if (code == KeyEvent.VK_P) {
-                gp.gameState = gp.playState;
-            }
+            pauseState(code);
         }
         else if (gp.gameState == gp.characterState) {
             if (code == KeyEvent.VK_B) {
                 gp.gameState = gp.playState;
+            }
+        }
+        else if (gp.gameState == gp.dialogueState) {
+            if (code == KeyEvent.VK_F) {
+                interactPressed = true;
+            }
+        }
+        else if (gp.gameState == gp.storyState) {
+            if (code == KeyEvent.VK_F) {
+                interactPressed = true;
+            }
+        }
+        else if (gp.gameState == gp.gameOverState) {
+            gameOverState(code);
+        }
+        else if (gp.gameState == gp.endingState) {
+            if (code == KeyEvent.VK_W){
+                gp.ui.commandNum --;
+                if (gp.ui.commandNum < 0) {
+                    gp.ui.commandNum = 1;
+                }
+            }
+            if (code == KeyEvent.VK_S){
+                gp.ui.commandNum ++;
+                if (gp.ui.commandNum >1) {
+                    gp.ui.commandNum = 0;
+                }
+            }
+            if (code == KeyEvent.VK_F) {
+                interactPressed = true;
+                if (gp.ui.commandNum == 0) {
+                    gp.restart();
+                }
+                else if (gp.ui.commandNum == 1) {
+                    System.exit(0);
+                }
             }
         }
     }
@@ -99,6 +133,55 @@ public class KeyHandler  implements KeyListener {
         if (code == KeyEvent.VK_B){
             if(gp.gameState == gp.playState){
                 gp.gameState = gp.characterState;
+            }
+        }
+    }
+
+    public void pauseState(int code) {
+        if (code == KeyEvent.VK_W){
+            gp.ui.commandNum --;
+            if (gp.ui.commandNum < 0) {
+                gp.ui.commandNum = 2;
+            }
+        }
+        if (code == KeyEvent.VK_S){
+            gp.ui.commandNum ++;
+            if (gp.ui.commandNum >2) {
+                gp.ui.commandNum = 0;
+            }
+        }
+        if (code == KeyEvent.VK_F) {
+            if (gp.ui.commandNum == 0) {
+                gp.gameState = gp.playState;
+            }
+            else if (gp.ui.commandNum == 1) {
+                gp.restart();
+            }
+            else if (gp.ui.commandNum == 2) {
+                System.exit(0);
+            }
+        }
+    }
+
+    public void gameOverState(int code){
+        if (code == KeyEvent.VK_W){
+            gp.ui.commandNum --;
+            if (gp.ui.commandNum < 0) {
+                gp.ui.commandNum = 1;
+            }
+        }
+        if (code == KeyEvent.VK_S){
+            gp.ui.commandNum ++;
+            if (gp.ui.commandNum >1) {
+                gp.ui.commandNum = 0;
+            }
+        }
+        if (code == KeyEvent.VK_F) {
+            if (gp.ui.commandNum == 0) {
+                gp.restart();
+            }
+            else if (gp.ui.commandNum == 1) {
+                System.exit(0);
             }
         }
     }

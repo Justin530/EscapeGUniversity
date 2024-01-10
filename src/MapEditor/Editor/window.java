@@ -48,7 +48,7 @@ public class window extends JFrame {
     public static ImageIcon[] icons = new ImageIcon[300];
 
 
-    public window() {
+    public window() throws IOException {
 
         this.setSize(1500, 1000);
         this.setVisible(true);
@@ -57,6 +57,7 @@ public class window extends JFrame {
         this.setLocationRelativeTo(null);
         this.setTitle("MapMaker");
         this.setLayout(null);
+
 
         JPanel jPaneldi = new JPanel();
         jPaneldi.setLayout(null);
@@ -418,7 +419,7 @@ public class window extends JFrame {
                 //使用j1[a][b]判断是否为0，如果不为零的话，输出x.png的字符串，然后换行，判断Solids[a][b]是否为零如果为零输出false，如果
                 //为1输出true
 
-                for (int i = 0; i <11 ; i++) {//////扩
+                for (int i = 0; i <16 ; i++) {//////扩
                     for (int j = 0; j < 20; j++) {
                         if (j1[i][j] != 0) {
 
@@ -554,9 +555,18 @@ public class window extends JFrame {
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-
-
                 }
+            }
+        });
+
+        JButton jButton11=new JButton();
+        jButton11.setBounds(690,10,100,40);
+        jPaneldi.add(jButton11);
+        jButton11.setText("使用说明");
+        jButton11.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Instruction instruction=new Instruction();
             }
         });
 
@@ -634,7 +644,7 @@ public class window extends JFrame {
 
 
         JPanel jPanel1 = new JPanel();
-        jPanel1.setBounds(50, 700, 960, 480);
+        jPanel1.setBounds(50, 700, 960, 720);
         // jPanel1.setBackground(Color.GRAY);
         jPanel1.setLayout(new MyLayout1());
         jPaneldi.add(jPanel1);
@@ -642,7 +652,7 @@ public class window extends JFrame {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-        for (int i = 0; i < 11; i++) {//扩
+        for (int i = 0; i < 16; i++) {//扩
             for (int j = 0; j < 20; j++) {
 
                 JButton jButton = new JButton();
@@ -658,7 +668,7 @@ public class window extends JFrame {
 
                         jLabel2.setIcon(SelectedIcon);
 
-                        for (int k = 0; k < 11; k++) {//扩
+                        for (int k = 0; k < 16; k++) {//扩
                             for (int l = 0; l < 20; l++) {
                                 if (e.getSource() == jButtons1[k][l]) {
                                     SelectedIconx = l;
@@ -834,7 +844,7 @@ public class window extends JFrame {
     }
 
     public int Judge1x() {
-        for (int i = 0; i < 11; i++) {//扩
+        for (int i = 0; i < 16; i++) {//扩
             for (int j = 0; j < 20; j++) {
                 if (j1[i][j] == 0) {
                     return i;
@@ -846,7 +856,7 @@ public class window extends JFrame {
     }
 
     public int Judge1y() {
-        for (int i = 0; i < 11; i++) {//扩
+        for (int i = 0; i < 16; i++) {//扩
             for (int j = 0; j < 20; j++) {
                 if (j1[i][j] == 0) {
                     return j;

@@ -5,15 +5,16 @@ import MapEditor.Editor.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 public class start extends JFrame {
 
     private JFrame start;
 
-    public start(){
+    public start() throws IOException {
         start=new JFrame("Start");
         start.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        start.setSize(768,576);
+        start.setSize(768,606);//768*576
         start.setResizable(false);
         start.setVisible(true);
         start.setLocationRelativeTo(null);
@@ -21,9 +22,9 @@ public class start extends JFrame {
 
 
 
-        ImageIcon backgound = new ImageIcon("src/res/images/Mbg.png");
-        backgound.setImage(backgound.getImage().getScaledInstance(768,576, Image.SCALE_DEFAULT));
-        JLabel jLabel=new JLabel(backgound);
+        ImageIcon background = new ImageIcon("src/res/images/Mbg2bg2.png");
+       // backgound.setImage(backgound.getImage().getScaledInstance(768,576, Image.SCALE_DEFAULT));
+        JLabel jLabel=new JLabel(background);
         jLabel.setBounds(0,0,768,576);
 
         JPanel imagePanel;
@@ -33,10 +34,9 @@ public class start extends JFrame {
 
 
 
-
         JButton jButton=new JButton();
-        jButton.setText("Enter");
-        jButton.setBounds(325,305,150,50);
+        //jButton.setText("Enter");
+        jButton.setBounds(193,417,366,71);
         jButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -46,20 +46,23 @@ public class start extends JFrame {
         });
 
         Font fonte=new Font("consolas",Font.PLAIN,40);
-        Font font1=new Font("jetbrains mono",Font.PLAIN,30);
+        Font font1=new Font("jetbrains mono",Font.PLAIN,20);
         //consolas,jetbrains mono,Chalkboard,Comic Code Ligatures,Futura, Monaco
         jButton.setFont(fonte);
+        jButton.setIcon(new ImageIcon("src/res/images/ButtonE.png"));
 
         jButton.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mouseEntered(MouseEvent e) {
+                jButton.setBorderPainted(true);
                 jButton.setForeground(Color.gray);
                 getStart().validate();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
+                jButton.setBorderPainted(false);
                 jButton.setForeground(Color.black);
                 getStart().validate();
             }
@@ -73,9 +76,15 @@ public class start extends JFrame {
         imagePanel.add(jButton);
 
 
+
+
+
+
+
+
         JButton jButton1=new JButton();
         jButton1.setText("设置");
-        jButton1.setBounds(60,310,150,40);
+        jButton1.setBounds(610,513,116,25);
         jButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -104,12 +113,12 @@ public class start extends JFrame {
         //  jButton.setForeground(Color.gray);
 
 
-        jButton1.setContentAreaFilled(false);
-        jButton1.setBorderPainted(false);
-
-
+       // jButton1.setContentAreaFilled(false);
+        //jButton1.setBorderPainted(false);
 
         imagePanel.add(jButton1);
+
+
 
 
 
@@ -150,9 +159,11 @@ public class start extends JFrame {
 
         imagePanel.add(jButton2);
 
+
+
         JButton jButton3=new JButton();
         jButton3.setText("地图编辑");
-        jButton3.setBounds(60,390,160,40);
+        jButton3.setBounds(185,513,383,24);
         jButton3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -180,16 +191,18 @@ public class start extends JFrame {
         //  jButton.setForeground(Color.gray);
 
 
-        jButton3.setContentAreaFilled(false);
-        jButton3.setBorderPainted(false);
+       // jButton3.setContentAreaFilled(false);
+        //jButton3.setBorderPainted(false);
 
 
         imagePanel.add(jButton3);
 
+        Color color1=new Color(252,227,186);
+
 
         JButton jButton4=new JButton();
-        jButton4.setText("退出游戏");
-        jButton4.setBounds(60,430,160,40);
+        jButton4.setText("EXIT");
+        jButton4.setBounds(25,510,125,33);
         jButton4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -198,7 +211,8 @@ public class start extends JFrame {
         });
 
         jButton4.setFont(font1);
-        jButton4.setForeground(Color.CYAN);
+       // jButton4.setForeground(Color.CYAN);
+        jButton4.setBackground(color1);
 
         jButton4.addMouseListener(new MouseAdapter() {
 
@@ -210,15 +224,15 @@ public class start extends JFrame {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                jButton4.setForeground(Color.CYAN);
+                jButton4.setForeground(Color.black);
                 getStart().validate();
             }
         });
         //  jButton.setForeground(Color.gray);
 
 
-        jButton4.setContentAreaFilled(false);
-        jButton4.setBorderPainted(false);
+       // jButton4.setContentAreaFilled(false);
+      //  jButton4.setBorderPainted(false);
 
 
         imagePanel.add(jButton4);

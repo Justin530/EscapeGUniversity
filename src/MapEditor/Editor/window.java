@@ -554,9 +554,18 @@ public class window extends JFrame {
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-
-
                 }
+            }
+        });
+
+        JButton jButton11=new JButton();
+        jButton11.setBounds(690,10,100,40);
+        jPaneldi.add(jButton11);
+        jButton11.setText("使用说明");
+        jButton11.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Instruction instruction=new Instruction();
             }
         });
 

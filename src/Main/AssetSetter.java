@@ -12,7 +12,9 @@ public class AssetSetter {
     }
 
     public void setObjects() {
-//        gp.objects[gp.currentMap][0] = new OBJ_Heart(gp);
+        gp.objects[gp.currentMap][0] = new OBJ_Potion(gp);
+        gp.objects[gp.currentMap][0].worldLoc.setXPosition(gp.tileSize * 5);
+        gp.objects[gp.currentMap][0].worldLoc.setYPosition(gp.tileSize * 5);
 
         gp.objects[0][1] = new OBJ_Potion(gp);
         gp.objects[0][1].worldLoc.setXPosition(gp.tileSize * 20);
@@ -21,6 +23,7 @@ public class AssetSetter {
         gp.objects[0][2] = new OBJ_Board(gp);
         gp.objects[0][2].worldLoc.setXPosition(gp.tileSize * 3);
         gp.objects[0][2].worldLoc.setYPosition(gp.tileSize * 3);
+
     }
 
     public void setMonsters() {

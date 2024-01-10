@@ -11,7 +11,7 @@ public class Sound {
 
     public Sound() {
         soundURL[0] = getClass().getResource("/res/sound/LifeWillChange.wav");
-        soundURL[1] = getClass().getResource("/res/sound/TakeOver.wav");
+        soundURL[1] = getClass().getResource("/res/sound/FaceMyself.wav");
     }
 
     public void setFile(int i) {

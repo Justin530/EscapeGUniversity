@@ -2,6 +2,7 @@ package Main;
 
 import AI.PathFinder;
 import Entity.*;
+import Main.UI.Story;
 import Main.UI.UI;
 import Object.*;
 import Main.Tile.TileManager;
@@ -32,7 +33,7 @@ public class GamePanel extends JPanel implements Runnable{
     final int FPS = 60;
 
     //Controllers of the game
-    KeyHandler keyHandler = new KeyHandler(this);
+    public KeyHandler keyHandler = new KeyHandler(this);
     Sound sound = new Sound();
     public TileManager tileManager = new TileManager(this);
     public CollisionDetector collisionDetector = new CollisionDetector(this);
@@ -47,13 +48,16 @@ public class GamePanel extends JPanel implements Runnable{
     public SuperObject[][] objects = new SuperObject[maxMap][50];
     ArrayList<Entity> entityList = new ArrayList<Entity>();
     public ArrayList<Entity> flyingObjectList = new ArrayList<Entity>();
+    public Story story = new Story(this);
 
     //game states
-    public int gameState;
+    public int gameState = -1;
+    public final int storyState = 0;
     public final int playState = 1;
     public final int pauseState = 2;
     public final int gameOverState = 3;
     public final int characterState = 4;
+    public final int dialogueState = 5;
 
     public GamePanel(){
         setFocusable(true);
@@ -70,8 +74,8 @@ public class GamePanel extends JPanel implements Runnable{
         assetSetter.setMonsters();
         assetSetter.setObjects();
 
-        playMusic(0);
-        gameState = playState;
+        playMusic(1);
+        gameState = storyState;
     }
 
     public void startGameThread() {
@@ -166,8 +170,11 @@ public class GamePanel extends JPanel implements Runnable{
             }
 
 
-        } else {
+        } else if (gameState == storyState){
             //todo
+            story.speak();
+        } else if (gameState == dialogueState) {
+            objects[currentMap][player.objectIndex].interact();
         }
     }
 
@@ -176,28 +183,30 @@ public class GamePanel extends JPanel implements Runnable{
 
         Graphics2D g2d = (Graphics2D) g;
 
-        //Draw the world
-        tileManager.draw(g2d);
+        if (gameState != storyState) {
+            //Draw the world
+            tileManager.draw(g2d);
 
-        for (int i = 0; i < objects[currentMap].length; i++) {
-            if (objects[currentMap][i] != null) {
-                objects[currentMap][i].draw(g2d, this);
+            for (int i = 0; i < objects[currentMap].length; i++) {
+                if (objects[currentMap][i] != null) {
+                    objects[currentMap][i].draw(g2d, this);
+                }
             }
-        }
 
-        //Draw the player
-        player.draw(g2d);
+            //Draw the player
+            player.draw(g2d);
 
-        //Draw the monsters
-        for (int i = 0; i < monsters[currentMap].length; i++) {
-            if (monsters[currentMap][i] != null) {
-                monsters[currentMap][i].draw(g2d);
+            //Draw the monsters
+            for (int i = 0; i < monsters[currentMap].length; i++) {
+                if (monsters[currentMap][i] != null) {
+                    monsters[currentMap][i].draw(g2d);
+                }
             }
-        }
 
-        for (int i = 0; i < flyingObjectList.size(); i++) {
-            if (flyingObjectList.get(i) != null) {
-                flyingObjectList.get(i).draw(g2d);
+            for (int i = 0; i < flyingObjectList.size(); i++) {
+                if (flyingObjectList.get(i) != null) {
+                    flyingObjectList.get(i).draw(g2d);
+                }
             }
         }
 

@@ -34,6 +34,16 @@ public class KeyHandler  implements KeyListener {
                 gp.gameState = gp.playState;
             }
         }
+        else if (gp.gameState == gp.dialogueState) {
+            if (code == KeyEvent.VK_F) {
+                interactPressed = true;
+            }
+        }
+        else if (gp.gameState == gp.storyState) {
+            if (code == KeyEvent.VK_F) {
+                interactPressed = true;
+            }
+        }
     }
 
     @Override

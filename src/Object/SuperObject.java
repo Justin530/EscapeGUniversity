@@ -12,6 +12,8 @@ public class SuperObject {
     UtilityTool uTool = new UtilityTool();
     public BufferedImage img, img2, img3;
     public String name;
+    public int dialogueIndex = 0;
+    public String[] dialogues = new String[30];
     public boolean collisionOn = false;
     public Location worldLoc = new Location(0, 0);
     public Rectangle hitBox = new Rectangle(0, 0, 48, 48);

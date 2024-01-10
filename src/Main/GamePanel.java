@@ -2,6 +2,7 @@ package Main;
 
 import AI.PathFinder;
 import Entity.*;
+import Main.UI.EndingStory;
 import Main.UI.Story;
 import Main.UI.UI;
 import Object.*;
@@ -49,6 +50,7 @@ public class GamePanel extends JPanel implements Runnable{
     ArrayList<Entity> entityList = new ArrayList<Entity>();
     public ArrayList<Entity> flyingObjectList = new ArrayList<Entity>();
     public Story story = new Story(this);
+    public EndingStory endingStory = new EndingStory(this);
 
     //game states
     public int gameState = -1;
@@ -58,6 +60,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int gameOverState = 3;
     public final int characterState = 4;
     public final int dialogueState = 5;
+    public final int endingState = 6;
 
     public GamePanel(){
         setFocusable(true);
@@ -74,6 +77,16 @@ public class GamePanel extends JPanel implements Runnable{
         assetSetter.setMonsters();
         assetSetter.setObjects();
 
+        playMusic(1);
+        gameState = storyState;
+    }
+
+    public void restart() {
+        assetSetter.setMonsters();
+        assetSetter.setObjects();
+        player.setDefaultValues();
+
+        stopMusic();
         playMusic(1);
         gameState = storyState;
     }
@@ -175,6 +188,9 @@ public class GamePanel extends JPanel implements Runnable{
             story.speak();
         } else if (gameState == dialogueState) {
             objects[currentMap][player.objectIndex].interact();
+        } else if (gameState == endingState) {
+            //todo
+            endingStory.speak();
         }
     }
 

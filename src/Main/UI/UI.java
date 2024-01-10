@@ -79,12 +79,54 @@ public class UI {
     }
 
     public void drawPauseScreen(){
-        g2d.setFont(g2d.getFont().deriveFont(80.0f));
-        String text = "PAUSED";
-        int x = getXForCenteredText(text);
-        int y = gp.screenHeight / 2;
+        g2d.setColor(new Color(0, 0, 0, 150));
+        g2d.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
 
+        int x, y;
+        String text;
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 110f));
+
+        text = "PAUSED";
+        //Shadow
+        g2d.setColor(Color.BLACK);
+        x = getXForCenteredText(text);
+        y = gp.tileSize * 4;
         g2d.drawString(text, x, y);
+        //Main
+        g2d.setColor(Color.WHITE);
+        x = getXForCenteredText(text) - 5;
+        y = gp.tileSize * 4 - 5;
+        g2d.drawString(text, x, y);
+
+        //Continue
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 40f));
+        text = "continue";
+        x = getXForCenteredText(text);
+        y += gp.tileSize * 4;
+        g2d.drawString(text, x, y);
+        if (commandNum == 0) {
+            g2d.drawString(">", x - 40, y);
+        }
+
+        //Restart
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 40f));
+        text = "restart";
+        x = getXForCenteredText(text);
+        y += gp.tileSize;
+        g2d.drawString(text, x, y);
+        if (commandNum == 1) {
+            g2d.drawString(">", x - 40, y);
+        }
+
+        //Quit
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 40f));
+        text = "quit";
+        x = getXForCenteredText(text);
+        y += gp.tileSize;
+        g2d.drawString(text, x, y);
+        if (commandNum == 2) {
+            g2d.drawString(">", x - 40, y);
+        }
     }
 
     public int getXForCenteredText(String text){
@@ -255,6 +297,16 @@ public class UI {
         text = "restart";
         x = getXForCenteredText(text);
         y += gp.tileSize * 4;
+        g2d.drawString(text, x, y);
+        if (commandNum == 0) {
+            g2d.drawString(">", x - 40, y);
+        }
+
+        //Quit
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 40f));
+        text = "quit";
+        x = getXForCenteredText(text);
+        y += gp.tileSize;
         g2d.drawString(text, x, y);
         if (commandNum == 1) {
             g2d.drawString(">", x - 40, y);

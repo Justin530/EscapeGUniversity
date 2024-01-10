@@ -92,7 +92,7 @@ public class Player extends Entity {
         if (objectIndex != 999) {
 //            Message message = new Message(gp, "Press F to interact");
 //            gp.ui.addMessage(message);
-            if (keyH.interactPressed){
+            if (keyH.interactPressed) {
 //                System.out.println("interact");
                 interactObject(objectIndex);
                 //keyH.interactPressed = false;
@@ -101,7 +101,7 @@ public class Player extends Entity {
 
         if (attacking) {
             attack();
-        } else if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.attackPressed) {
+        } else if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed ) {
             if (keyH.upPressed) {
                 direction = Direction.U;
             }
@@ -126,14 +126,9 @@ public class Player extends Entity {
             if (keyH.rightPressed && keyH.downPressed) {
                 direction = Direction.RD;
             }
-            if (keyH.attackPressed) {
-                attacking = true;
-            }
-
             //check tile collision
             collisionOn = false;
             gp.collisionDetector.checkTile(this);
-
 
 
             //check monster collision
@@ -153,6 +148,9 @@ public class Player extends Entity {
                 spriteCount++;
             }
         }
+        if(keyH.attackPressed){
+            attacking=true;
+        }
         if (keyH.changeWeaponPressed && weaponChange == 1) {
             sign_weapon = (sign_weapon + 1) % 2;
             weaponChange = 0;
@@ -171,30 +169,30 @@ public class Player extends Entity {
         }
         //大招，往八个方向发射子弹
         if (keyH.greatPressed && this.getCD() == 0) {
-            if (sign_weapon == 1 && fireBallNumber >= 8   ) {
+            if (sign_weapon == 1 && fireBallNumber >= 8) {
 
-                Bullet flyingObject1=new Bullet(gp);
+                Bullet flyingObject1 = new Bullet(gp);
                 flyingObject1.set(worldLoc.getXPosition(), worldLoc.getYPosition(), Direction.D, true, this);
                 gp.flyingObjectList.add(flyingObject1);
-                Bullet flyingObject2=new Bullet(gp);
+                Bullet flyingObject2 = new Bullet(gp);
                 flyingObject2.set(worldLoc.getXPosition(), worldLoc.getYPosition(), Direction.U, true, this);
                 gp.flyingObjectList.add(flyingObject2);
-                Bullet flyingObject3=new Bullet(gp);
+                Bullet flyingObject3 = new Bullet(gp);
                 flyingObject3.set(worldLoc.getXPosition(), worldLoc.getYPosition(), Direction.L, true, this);
                 gp.flyingObjectList.add(flyingObject3);
-                Bullet flyingObject4=new Bullet(gp);
+                Bullet flyingObject4 = new Bullet(gp);
                 flyingObject4.set(worldLoc.getXPosition(), worldLoc.getYPosition(), Direction.R, true, this);
                 gp.flyingObjectList.add(flyingObject4);
-                Bullet flyingObject5=new Bullet(gp);
+                Bullet flyingObject5 = new Bullet(gp);
                 flyingObject5.set(worldLoc.getXPosition(), worldLoc.getYPosition(), Direction.RD, true, this);
                 gp.flyingObjectList.add(flyingObject5);
-                Bullet flyingObject6=new Bullet(gp);
+                Bullet flyingObject6 = new Bullet(gp);
                 flyingObject6.set(worldLoc.getXPosition(), worldLoc.getYPosition(), Direction.RU, true, this);
                 gp.flyingObjectList.add(flyingObject6);
-                Bullet flyingObject7=new Bullet(gp);
+                Bullet flyingObject7 = new Bullet(gp);
                 flyingObject7.set(worldLoc.getXPosition(), worldLoc.getYPosition(), Direction.LD, true, this);
                 gp.flyingObjectList.add(flyingObject7);
-                Bullet flyingObject8=new Bullet(gp);
+                Bullet flyingObject8 = new Bullet(gp);
                 flyingObject8.set(worldLoc.getXPosition(), worldLoc.getYPosition(), Direction.LU, true, this);
                 gp.flyingObjectList.add(flyingObject8);
                 shotAvailableCounter = 0;
@@ -283,15 +281,14 @@ public class Player extends Entity {
                 worldLoc.setYPosition(currentWorldY);
                 hitBox.width = hitBoxWidth;
                 hitBox.height = hitBoxHeight;
-            }
-            else {
+            } else {
                 spriteNum = 1;
                 spriteCount = 0;
                 attacking = false;
             }
         } else {
             //子弹远程攻击
-            if (CD==0&&fireBallNumber > 0 && !flyingObject.alive  ) {
+            if (CD == 0 && fireBallNumber > 0 && !flyingObject.alive) {
                 //set default coordinates, direction and user
                 flyingObject.set(worldLoc.getXPosition(), worldLoc.getYPosition(), direction, true, this);
                 //add it to the list
@@ -299,7 +296,7 @@ public class Player extends Entity {
                 shotAvailableCounter = 0;
                 fireBallNumber--;
                 setCD();
-            }else {
+            } else {
                 attacking = false;
             }
         }
@@ -311,8 +308,7 @@ public class Player extends Entity {
             potionCount++;
             gp.objects[gp.currentMap][i].interact();
             gp.objects[gp.currentMap][i] = null;
-        }
-        else if (Objects.equals(gp.objects[gp.currentMap][i].name, "Board")) {
+        } else if (Objects.equals(gp.objects[gp.currentMap][i].name, "Board")) {
             gp.gameState = gp.dialogueState;
             gp.objects[gp.currentMap][i].interact();
         }
@@ -326,7 +322,7 @@ public class Player extends Entity {
         BufferedImage img = null;
         switch (direction) {
             case LU, U, RU -> {
-                if (attacking) {
+                if (attacking&& !flyingObject.alive) {
                     y -= gp.tileSize;
                     if (spriteNum == 1) img = attack_up1;
                     else if (spriteNum == 2) img = attack_up2;
@@ -336,7 +332,7 @@ public class Player extends Entity {
                 }
             }
             case LD, D, RD -> {
-                if (attacking) {
+                if (attacking&& !flyingObject.alive) {
                     if (spriteNum == 1) img = attack_down1;
                     else if (spriteNum == 2) img = attack_down2;
                 } else {
@@ -345,7 +341,7 @@ public class Player extends Entity {
                 }
             }
             case L -> {
-                if (attacking) {
+                if (attacking&& !flyingObject.alive) {
                     x -= gp.tileSize;
                     if (spriteNum == 1) img = attack_left1;
                     else if (spriteNum == 2) img = attack_left2;
@@ -355,7 +351,7 @@ public class Player extends Entity {
                 }
             }
             case R -> {
-                if (attacking) {
+                if (attacking&& !flyingObject.alive) {
                     if (spriteNum == 1) img = attack_right1;
                     else if (spriteNum == 2) img = attack_right2;
                 } else {
@@ -397,10 +393,10 @@ public class Player extends Entity {
         }
 
         //飞行物还存在时，打印：正在装弹
-        Color customColor = new Color(200, 100, 5);//设置颜色
+        Color customColor = new Color(00, 00, 0);//设置颜色
         g2d.setColor(customColor);
-        if(flyingObject.alive){
-            g2d.drawString("正在装弹", screenLoc.getXPosition() , screenLoc.getYPosition() - 18);
+        if (flyingObject.alive) {
+            g2d.drawString("正在装弹", screenLoc.getXPosition(), screenLoc.getYPosition() - 18);
         }
         g2d.setFont(ori);
         //减武器CD

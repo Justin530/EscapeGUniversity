@@ -1,7 +1,7 @@
 package Main;
 
 import Entity.Entity;
-
+import Entity.Direction;
 public class CollisionDetector {
     GamePanel gp;
 
@@ -21,7 +21,7 @@ public class CollisionDetector {
         int entityUpRow = entityUpY / gp.tileSize;
         int entityDownRow = entityDownY / gp.tileSize;
 
-        int tileNum1, tileNum2;//only two tiles are to be detected, for example if the entity is moving up, only the tile above and the tile above and to the right are to be detected
+        int tileNum1, tileNum2,tileNum3;//only two tiles are to be detected, for example if the entity is moving up, only the tile above and the tile above and to the right are to be detected
 
         switch (entity.direction) {
             case U -> {
@@ -60,48 +60,69 @@ public class CollisionDetector {
                 entityRightCol = (entityRightX + entity.speed) / gp.tileSize;
                 entityUpRow = (entityUpY - entity.speed) / gp.tileSize;
                 tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityUpRow];
-                //tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityDownRow];
-//                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
-//                    entity.collisionOn = true;
-//                }
-                if (gp.tileManager.tile[tileNum1].collision ) {
+                tileNum2 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityUpY / gp.tileSize];
+                tileNum3 = gp.tileManager.mapTileNum[gp.currentMap][entityRightX / gp.tileSize][entityUpRow];
+                if (gp.tileManager.tile[tileNum1].collision) {
                     entity.collisionOn = true;
+                }
+                if (entity.collisionOn == true && !(gp.tileManager.tile[tileNum2].collision)) {
+                    entity.collisionOn = false;
+                    entity.direction = Direction.R;
+                } else if (entity.collisionOn == true && !(gp.tileManager.tile[tileNum3].collision)) {
+                    entity.collisionOn = false;
+                    entity.direction = Direction.U;
                 }
             }
             case RD -> {
                 entityRightCol = (entityRightX + entity.speed) / gp.tileSize;
                 entityDownRow = (entityDownY + entity.speed) / gp.tileSize;
                 tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityDownRow];
-                //tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityDownRow];
-//                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
-//                    entity.collisionOn = true;
-//                }
-                if (gp.tileManager.tile[tileNum1].collision ) {
+                tileNum2 = gp.tileManager.mapTileNum[gp.currentMap][entityRightCol][entityUpY / gp.tileSize];
+                tileNum3 = gp.tileManager.mapTileNum[gp.currentMap][entityRightX / gp.tileSize][entityDownRow];
+                if (gp.tileManager.tile[tileNum1].collision) {
                     entity.collisionOn = true;
+                }
+                if (entity.collisionOn == true && !(gp.tileManager.tile[tileNum2].collision)) {
+                    entity.collisionOn = false;
+                    entity.direction = Direction.R;
+                } else if (entity.collisionOn == true && !(gp.tileManager.tile[tileNum3].collision)) {
+                    entity.collisionOn = false;
+                    entity.direction = Direction.D;
                 }
             }
             case LD -> {
                 entityLeftCol = (entityLeftX - entity.speed) / gp.tileSize;
                 entityDownRow = (entityDownY + entity.speed) / gp.tileSize;
                 tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityDownRow];
-                //tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityDownRow];
-//                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
-//                    entity.collisionOn = true;
-//                }
-                if (gp.tileManager.tile[tileNum1].collision ) {
+                tileNum2 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftX / gp.tileSize][entityDownRow];
+                tileNum3 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityDownY / gp.tileSize];
+                if (gp.tileManager.tile[tileNum1].collision) {
                     entity.collisionOn = true;
+                }
+                if (entity.collisionOn == true && !(gp.tileManager.tile[tileNum3].collision)) {
+                    entity.collisionOn = false;
+                    entity.direction = Direction.L;
+                } else if (entity.collisionOn == true && !(gp.tileManager.tile[tileNum2].collision)) {
+                    entity.collisionOn = false;
+                    entity.direction = Direction.D;
                 }
             }
             case LU -> {
                 entityLeftCol = (entityLeftX - entity.speed) / gp.tileSize;
                 entityUpRow = (entityUpY - entity.speed) / gp.tileSize;
                 tileNum1 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityUpRow];
-                //tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityDownRow];
-//                if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
-//                    entity.collisionOn = true;
-//                }
-                if (gp.tileManager.tile[tileNum1].collision ) {
+                tileNum2 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftCol][entityDownY / gp.tileSize];
+                tileNum3 = gp.tileManager.mapTileNum[gp.currentMap][entityLeftX / gp.tileSize][entityUpRow];
+                if (gp.tileManager.tile[tileNum1].collision) {
                     entity.collisionOn = true;
+                }
+                if (entity.collisionOn == true && !(gp.tileManager.tile[tileNum2].collision)) {
+                    entity.collisionOn = false;
+
+                    entity.direction = Direction.L;
+                } else if (entity.collisionOn == true && !(gp.tileManager.tile[tileNum3].collision)) {
+                    entity.collisionOn = false;
+                    entity.direction = Direction.U;
                 }
             }
         }

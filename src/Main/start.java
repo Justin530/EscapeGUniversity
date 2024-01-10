@@ -119,9 +119,7 @@ public class start extends JFrame {
 
 
 
-
-
-        JButton jButton2=new JButton();
+        /*JButton jButton2=new JButton();
         jButton2.setText("操作说明");
         jButton2.setBounds(60,350,160,40);
         jButton2.addActionListener(new ActionListener() {
@@ -156,7 +154,7 @@ public class start extends JFrame {
         jButton2.setBorderPainted(false);
 
 
-        imagePanel.add(jButton2);
+        imagePanel.add(jButton2);*/
 
 
 

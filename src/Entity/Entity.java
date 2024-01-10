@@ -283,7 +283,9 @@ public class Entity {
     }
 
     protected void move(Entity self) {
-        switch (self.direction) {
+        self.worldLoc.setXPosition(self.worldLoc.getXPosition()+self.speed*self.direction.getDx());
+        self.worldLoc.setYPosition(self.worldLoc.getYPosition()+self.speed*self.direction.getDy());
+    /*    switch (self.direction) {
             case U -> self.worldLoc.setYPosition(self.worldLoc.getYPosition() - self.speed);
             case D -> self.worldLoc.setYPosition(self.worldLoc.getYPosition() + self.speed);
             case L -> self.worldLoc.setXPosition(self.worldLoc.getXPosition() - self.speed);
@@ -304,6 +306,6 @@ public class Entity {
                 self.worldLoc.setXPosition(self.worldLoc.getXPosition() + self.speed);
                 self.worldLoc.setYPosition(self.worldLoc.getYPosition() - self.speed);
             }
-        }
+        }*/
     }
 }

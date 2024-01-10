@@ -2,6 +2,7 @@ package Main;
 
 import AI.PathFinder;
 import Entity.*;
+import Entity.Monsters.Yukari;
 import Main.UI.EndingStory;
 import Main.UI.Story;
 import Main.UI.UI;
@@ -79,7 +80,7 @@ public class GamePanel extends JPanel implements Runnable{
         assetSetter.setObjects();
 
         playMusic(1);
-        gameState = endingState;
+        gameState = storyState;
     }
 
     public void restart() {
@@ -167,6 +168,8 @@ public class GamePanel extends JPanel implements Runnable{
                         monsters[currentMap][i].update();
                     }
                     if (!monsters[currentMap][i].alive) {
+                        if(monsters[currentMap][i] instanceof Yukari)
+                            ((Yukari) monsters[currentMap][i]).dropObject();
                         monsters[currentMap][i] = null;
                     }
                 }

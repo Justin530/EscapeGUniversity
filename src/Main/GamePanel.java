@@ -61,6 +61,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int characterState = 4;
     public final int dialogueState = 5;
     public final int endingState = 6;
+    public final int victoryState = 7;
 
     public GamePanel(){
         setFocusable(true);
@@ -78,7 +79,7 @@ public class GamePanel extends JPanel implements Runnable{
         assetSetter.setObjects();
 
         playMusic(1);
-        gameState = storyState;
+        gameState = endingState;
     }
 
     public void restart() {

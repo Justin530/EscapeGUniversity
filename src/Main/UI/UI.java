@@ -76,6 +76,12 @@ public class UI {
         if (gp.gameState == gp.storyState) {
             drawStoryScreen();
         }
+        if (gp.gameState == gp.endingState) {
+            drawEndingScreen();
+        }
+        if (gp.gameState == gp.victoryState) {
+            drawVictoryScreen();
+        }
     }
 
     public void drawPauseScreen(){
@@ -281,6 +287,82 @@ public class UI {
         g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 110f));
 
         text = "GAME OVER";
+        //Shadow
+        g2d.setColor(Color.BLACK);
+        x = getXForCenteredText(text);
+        y = gp.tileSize * 4;
+        g2d.drawString(text, x, y);
+        //Main
+        g2d.setColor(Color.WHITE);
+        x = getXForCenteredText(text) - 5;
+        y = gp.tileSize * 4 - 5;
+        g2d.drawString(text, x, y);
+
+        //Restart
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 40f));
+        text = "restart";
+        x = getXForCenteredText(text);
+        y += gp.tileSize * 4;
+        g2d.drawString(text, x, y);
+        if (commandNum == 0) {
+            g2d.drawString(">", x - 40, y);
+        }
+
+        //Quit
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 40f));
+        text = "quit";
+        x = getXForCenteredText(text);
+        y += gp.tileSize;
+        g2d.drawString(text, x, y);
+        if (commandNum == 1) {
+            g2d.drawString(">", x - 40, y);
+        }
+    }
+
+    public void drawEndingScreen() {
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        Font chineseFont = new Font("宋体", Font.PLAIN, 20); // 使用宋体字体，12号字体大小
+        g2d.setFont(chineseFont); // 设置Graphics2D的字体为宋体
+
+        g2d.setColor(Color.WHITE);
+        g2d.drawString("按 F 键进行交互", gp.screenWidth - gp.tileSize * 5, gp.screenHeight - gp.tileSize);
+
+        int x = gp.tileSize * 3;
+        int y = gp.tileSize / 2 + gp.tileSize;
+
+        char characters[] = currentDialogue.toCharArray();
+
+        if (charIndex < characters.length) {
+            combinedText += characters[charIndex];
+            charIndex ++;
+        }
+        if (gp.keyHandler.interactPressed){
+            charIndex = 0;
+            combinedText = "";
+
+            if (gp.gameState == gp.endingState) {
+                gp.endingStory.dialogueIndex ++;
+                gp.keyHandler.interactPressed = false;
+            }
+        }
+
+        for (String line : combinedText.split("\n")) {
+            g2d.drawString(line, x, y);
+            y += g2d.getFontMetrics().getHeight();
+        }
+    }
+
+    public void drawVictoryScreen() {
+        g2d.setColor(new Color(0, 0, 0));
+        g2d.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        int x, y;
+        String text;
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 110f));
+
+        text = "VICTORY!";
         //Shadow
         g2d.setColor(Color.BLACK);
         x = getXForCenteredText(text);

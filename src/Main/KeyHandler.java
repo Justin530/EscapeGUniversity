@@ -46,27 +46,12 @@ public class KeyHandler  implements KeyListener {
             gameOverState(code);
         }
         else if (gp.gameState == gp.endingState) {
-            if (code == KeyEvent.VK_W){
-                gp.ui.commandNum --;
-                if (gp.ui.commandNum < 0) {
-                    gp.ui.commandNum = 1;
-                }
-            }
-            if (code == KeyEvent.VK_S){
-                gp.ui.commandNum ++;
-                if (gp.ui.commandNum >1) {
-                    gp.ui.commandNum = 0;
-                }
-            }
             if (code == KeyEvent.VK_F) {
                 interactPressed = true;
-                if (gp.ui.commandNum == 0) {
-                    gp.restart();
-                }
-                else if (gp.ui.commandNum == 1) {
-                    System.exit(0);
-                }
             }
+        }
+        else if (gp.gameState == gp.victoryState) {
+            victoryState(code);
         }
     }
 
@@ -164,6 +149,29 @@ public class KeyHandler  implements KeyListener {
     }
 
     public void gameOverState(int code){
+        if (code == KeyEvent.VK_W){
+            gp.ui.commandNum --;
+            if (gp.ui.commandNum < 0) {
+                gp.ui.commandNum = 1;
+            }
+        }
+        if (code == KeyEvent.VK_S){
+            gp.ui.commandNum ++;
+            if (gp.ui.commandNum >1) {
+                gp.ui.commandNum = 0;
+            }
+        }
+        if (code == KeyEvent.VK_F) {
+            if (gp.ui.commandNum == 0) {
+                gp.restart();
+            }
+            else if (gp.ui.commandNum == 1) {
+                System.exit(0);
+            }
+        }
+    }
+
+    public void victoryState(int code){
         if (code == KeyEvent.VK_W){
             gp.ui.commandNum --;
             if (gp.ui.commandNum < 0) {

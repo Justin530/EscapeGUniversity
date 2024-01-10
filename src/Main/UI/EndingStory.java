@@ -24,13 +24,12 @@ public class EndingStory {
     }
 
     public void speak() {
-
         if (story[dialogueIndex] == null) {
             dialogueIndex = 0;
-            gp.gameState = gp.playState;
+            gp.gameState = gp.victoryState;
             gp.keyHandler.interactPressed = false;
             gp.stopMusic();
-            gp.playMusic(0);
+            gp.playMusic(2);
             return;
         }
 

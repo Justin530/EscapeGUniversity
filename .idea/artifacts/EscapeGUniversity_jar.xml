@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="EscapeGUniversity:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/EscapeGUniversity_jar</output-path>
+    <root id="archive" name="EscapeGUniversity.jar">
+      <element id="module-output" name="EscapeGUniversity" />
+      <element id="library" level="project" name="res" />
+      <element id="module-source" name="EscapeGUniversity" />
+    </root>
+  </artifact>
+</component>

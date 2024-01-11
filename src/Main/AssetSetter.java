@@ -41,5 +41,30 @@ public class AssetSetter {
         gp.monsters[0][2] = new Rajiang(gp);
         gp.monsters[0][2].worldLoc.setXPosition(gp.tileSize * 22);
         gp.monsters[0][2].worldLoc.setYPosition(gp.tileSize * 41);
+
+        gp.monsters[0][3] = new Rajiang(gp);
+        gp.monsters[0][3].worldLoc.setXPosition(gp.tileSize * 25);
+        gp.monsters[0][3].worldLoc.setYPosition(gp.tileSize * 11);
+
+        gp.monsters[0][4] = new Rajiang(gp);
+        gp.monsters[0][4].worldLoc.setXPosition(gp.tileSize * 46);
+        gp.monsters[0][4].worldLoc.setYPosition(gp.tileSize * 12);
+
+        gp.monsters[0][5] = new Rajiang(gp);
+        gp.monsters[0][5].worldLoc.setXPosition(gp.tileSize * 43);
+        gp.monsters[0][5].worldLoc.setYPosition(gp.tileSize * 28);
+
+        gp.monsters[0][6] = new Rajiang(gp);
+        gp.monsters[0][6].worldLoc.setXPosition(gp.tileSize * 23);
+        gp.monsters[0][6].worldLoc.setYPosition(gp.tileSize * 47);
+
+        gp.monsters[0][7] = new Rajiang(gp);
+        gp.monsters[0][7].worldLoc.setXPosition(gp.tileSize * 40);
+        gp.monsters[0][7].worldLoc.setYPosition(gp.tileSize * 46);
+
+        gp.monsters[0][8] = new Rajiang(gp);
+        gp.monsters[0][8].worldLoc.setXPosition(gp.tileSize * 22);
+        gp.monsters[0][8].worldLoc.setYPosition(gp.tileSize * 41);
+
     }
 }

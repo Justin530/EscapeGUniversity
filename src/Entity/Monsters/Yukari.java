@@ -30,15 +30,15 @@ public class Yukari extends Entity {
             balls[i].set(worldLoc.getXPosition(), worldLoc.getYPosition(), hachiDirs[i], true, this);
         }
 
-        hitBox.x = 20;//从角落开始
-        hitBox.y = 40;
+        hitBox.x = 0;//从角落开始
+        hitBox.y = 0;
         hitBoxDefaultX = hitBox.x;
         hitBoxDefaultY = hitBox.y;
-        hitBox.width = 80;
-        hitBox.height = 80;
+        hitBox.width = 60;
+        hitBox.height = 120;
 
         direction = Direction.D;
-        speed = 1;
+        speed = 0;
         onPath = true;
         pController = new Random(System.currentTimeMillis());
         getMonsterImage();
@@ -73,18 +73,19 @@ public class Yukari extends Entity {
     }
     @Override
     public void setAction(){
-        if(attackIntervalCounter<=150) {
-            if(bulletCounter%15 == 0&&bulletCounter<=105) {
+        if(attackIntervalCounter<=300) {
+            if(bulletCounter<=210) {
                 //flyingObject.set(worldLoc.getXPosition(), worldLoc.getYPosition(), hachiDirs[attackIntervalCounter / 60], true, this);
                 //gp.flyingObjectList.add(flyingObject);
-                balls[bulletCounter / 15].set(worldLoc.getXPosition(), worldLoc.getYPosition(), balls[bulletCounter/15].direction,true,this);
-                gp.flyingObjectList.add(balls[bulletCounter / 15]);
+                if(bulletCounter%30==0) {
+                    balls[bulletCounter / 30].set(worldLoc.getXPosition() + 2*48 * balls[bulletCounter / 30].direction.getDx(), worldLoc.getYPosition() + 2*48 * balls[bulletCounter / 30].direction.getDy(), hachiDirs[bulletCounter / 30], true, this);
+                    gp.flyingObjectList.add(balls[bulletCounter / 30]);
+                }
                 attackIntervalCounter ++;
                 bulletCounter ++;
             }
             else{
                 attackIntervalCounter ++;
-                bulletCounter ++;
             }
         }else {
             attackIntervalCounter = 0;
@@ -133,8 +134,8 @@ public class Yukari extends Entity {
                 double oneScale = (double) gp.tileSize / maxHP;
                 double hpBarScale = 10*oneScale * HP;
 
-/*                g2d.setColor(new Color(35, 35, 35));
-                g2d.fillRect(screenX - 1, screenY - 16, gp.tileSize + 2, 12);*/
+                g2d.setColor(new Color(0, 0, 0, 255));
+                g2d.fillRect(148, 520, (int) (10*oneScale*this.maxHP), 10);
 
                 g2d.setColor(new Color(142, 8, 8, 250));
                 g2d.fillRect(148, 520, (int) hpBarScale, 10);
@@ -154,7 +155,7 @@ public class Yukari extends Entity {
             if (dying) {
                 dyingAnimation(g2d);
             }
-            g2d.drawImage(img, screenX, screenY, gp.tileSize*3, gp.tileSize*3, null);
+            g2d.drawImage(img, screenX-gp.tileSize, screenY-gp.tileSize, gp.tileSize*3, gp.tileSize*3, null);
             //reset alpha
             changeAlpha(g2d, 1.0f);
         }

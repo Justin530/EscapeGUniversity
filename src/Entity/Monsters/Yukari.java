@@ -65,9 +65,9 @@ public class Yukari extends Entity {
         int yDistance = Math.abs(worldLoc.getYPosition() - gp.player.worldLoc.getYPosition());
         int tileDistance = (xDistance + yDistance) / gp.tileSize;
 
-        if (!onPath && tileDistance >10) {
+        if (!onPath && (tileDistance >10 || tileDistance <=6)) {
                 onPath = true;
-        }else if (onPath && tileDistance <=5) {
+        }else if (onPath && tileDistance >6&&tileDistance<=10) {
             onPath = false;
         }
     }
@@ -84,7 +84,7 @@ public class Yukari extends Entity {
                 attackIntervalCounter ++;
                 bulletCounter ++;
             }
-            else{
+            else if(bulletCounter>210){
                 attackIntervalCounter ++;
             }
         }else {
@@ -92,7 +92,8 @@ public class Yukari extends Entity {
             bulletCounter = 0;
         }
         if (onPath) {
-            direction = QuickPathFinder.findNextStep(this,this.gp.player.worldLoc);
+            if(pController.nextInt(4) == 1)
+                direction = QuickPathFinder.findNextStep(this,this.gp.player.worldLoc);
         } else {
             actionLockCounter ++;
             if (actionLockCounter == 60) {
@@ -134,8 +135,10 @@ public class Yukari extends Entity {
                 double oneScale = (double) gp.tileSize / maxHP;
                 double hpBarScale = 10*oneScale * HP;
 
+
                 g2d.setColor(new Color(0, 0, 0, 255));
                 g2d.fillRect(148, 520, (int) (10*oneScale*this.maxHP), 10);
+
 
                 g2d.setColor(new Color(142, 8, 8, 250));
                 g2d.fillRect(148, 520, (int) hpBarScale, 10);
@@ -153,9 +156,11 @@ public class Yukari extends Entity {
                 changeAlpha(g2d, 0.5f);
             }
             if (dying) {
-                dyingAnimation(g2d);
+                dyingAnimation(g2d);git 
             }
+
             g2d.drawImage(img, screenX-gp.tileSize, screenY-gp.tileSize, gp.tileSize*3, gp.tileSize*3, null);
+
             //reset alpha
             changeAlpha(g2d, 1.0f);
         }

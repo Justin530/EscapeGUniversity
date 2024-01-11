@@ -156,7 +156,7 @@ public class Yukari extends Entity {
                 changeAlpha(g2d, 0.5f);
             }
             if (dying) {
-                dyingAnimation(g2d);git 
+                dyingAnimation(g2d);
             }
 
             g2d.drawImage(img, screenX-gp.tileSize, screenY-gp.tileSize, gp.tileSize*3, gp.tileSize*3, null);
